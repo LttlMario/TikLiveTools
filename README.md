@@ -15,6 +15,8 @@ npm start
 
 4. Deschide `http://localhost:3000`. La prima pornire aplicația creează automat baza `tik_live_tools` și tabelele lipsă; importul manual în phpMyAdmin nu mai este necesar.
 
+Pentru conectarea TikTok complet locală: autentifică-te în TikTok în browser, copiază valoarea cookie-ului `sessionid` al contului tău și introdu-o în Setup, apoi username-ul contului live. Valoarea rămâne doar în baza locală MariaDB și nu este trimisă către un signer terț; nu o publica în GitHub sau în capturi de ecran.
+
 Overlay-urile sunt disponibile la adrese de tipul:
 
 ```text
