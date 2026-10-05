@@ -1,0 +1,3 @@
+const assert=require('node:assert/strict');
+const base=process.env.TEST_BASE_URL||'http://localhost:3000';
+(async()=>{const r=await fetch(base+'/api/tts/voices');assert.equal(r.ok,true,'TTS voices endpoint must be available');const voices=await r.json();assert.ok(Array.isArray(voices)&&voices.length>=10,'Neural voice catalog must contain the editor voices');assert.ok(voices.some(v=>v.id==='ro-RO-AlinaNeural'),'Romanian Alina voice missing');assert.ok(voices.some(v=>v.id==='en-US-AvaMultilingualNeural'&&v.multilingual),'multilingual Ava voice missing');console.log('TikLiveTools TTS catalog test passed')})().catch(error=>{console.error(error);process.exit(1)});
