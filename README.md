@@ -4,7 +4,7 @@ Aplicație locală pentru automatizări TikTok LIVE, compatibilă cu TikTok LIVE
 
 ## Pornire locală
 
-1. Pornește Apache și MySQL din XAMPP.
+1. Pornește Apache și MySQL din XAMPP. În instalarea actuală, XAMPP este la `D:\xamppp` și MariaDB folosește portul `3306`.
 2. Deschide phpMyAdmin și importă `sql/schema.sql`.
 3. Copiază `.env.example` în `.env` și verifică datele MySQL.
 4. Rulează:
