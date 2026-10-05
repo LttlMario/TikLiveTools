@@ -61,3 +61,17 @@ https://<cont>.github.io/<repository>/overlay/firework/?backend=https://<backend
 ```
 
 Parametrul `backend` este opțional pentru rularea locală. Nu pune niciodată `sessionid`, parole OBS, fișiere `.env` sau datele MariaDB în repository; acestea rămân în configurația locală.
+
+Interfața completă este publicată la:
+
+```text
+https://live.panel-pro.ro/
+```
+
+Pentru a folosi interfața publică împreună cu serverul local, deschide:
+
+```text
+https://live.panel-pro.ro/?backend=https://adresa-publica-a-backendului/
+```
+
+Backend-ul trebuie să fie disponibil prin HTTPS și WebSocket (`wss://`). Serverul local permite CORS pentru `https://live.panel-pro.ro`; conexiunea TikTok, XAMPP, OBS și secretele rămân pe calculatorul personal.
