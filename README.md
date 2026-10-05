@@ -51,6 +51,10 @@ Integrarea TikTok folosește un conector open-source local, fără cont Euler St
 
 Pentru verificare rapidă fără live real, folosește butoanele `Test gift`, `Test like`, `Test follow` din galerie. Acestea trec prin același pipeline de DB, goals, rules, sunete și WebSocket ca evenimentele primite de la TikTok.
 
+### Actions & Events și testarea locală
+
+Pagina `Actions & Events` este împărțită în `Actions` și `Events`, cu acțiunile standard Follow Alert, Gift Alert, Like Alert și Sub Alert. Butonul de test dintr-un rând trimite un eveniment către `POST /api/test-event` al aplicației locale; evenimentul este procesat de MariaDB, reguli, TTS, sunete, WebSocket și OBS local. Nu este trimis către Tikfinity și nu depinde de un serviciu extern. Linkul `/overlay/action-screen?screen=N` este sursa Browser/Link pentru acel ecran și primește evenimentele prin WebSocket-ul backendului configurat.
+
 ## Overlay-uri publice prin GitHub Pages
 
 Aplicația poate rămâne locală, iar overlay-urile pot fi publicate separat. Workflow-ul `Publish public overlays` construiește automat rutele statice din `public/overlays` în GitHub Pages. Backend-ul, MariaDB, TikTok LIVE și OBS rămân pe calculatorul local.
