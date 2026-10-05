@@ -37,6 +37,7 @@ app.post('/api/disconnect',async(_q,r)=>{await tiktok.disconnect();state.connect
 app.post('/api/obs/connect',async(q,r)=>{try{await obs.connect(q.body.url||'ws://127.0.0.1:4455',q.body.password||'');state.obsConnected=true;r.json({ok:true,scenes:await obs.getScenes()})}catch(e){state.obsConnected=false;r.status(400).json({ok:false,error:e.message})}});
 app.post('/api/obs/disconnect',async(_q,r)=>{await obs.disconnect();state.obsConnected=false;r.json({ok:true})});
 app.get('/api/obs/scenes',async(_q,r)=>{try{r.json({scenes:await obs.getScenes()})}catch(e){r.status(400).json({error:e.message})}});
+app.post('/api/obs/scene',async(q,r)=>{try{await obs.setScene(String(q.body.scene||''));r.json({ok:true,scene:q.body.scene})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/api/rules',async(_q,r)=>{try{r.json(await db.getRules())}catch(e){r.status(500).json({error:e.message})}});
 app.post('/api/rules',async(q,r)=>{try{const id=await db.createRule(q.body);r.json({ok:true,id})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.put('/api/rules/:id',async(q,r)=>{try{await db.updateRule(q.params.id,q.body);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
