@@ -59,9 +59,15 @@ class Handler(BaseHTTPRequestHandler):
             options = json.loads(self.rfile.read(length).decode('utf-8'))
             text = str(options.get('text', '')).strip()[:5000]
             voice = str(options.get('voice', 'ro-RO-AlinaNeural'))
-            rate = str(options.get('rate', '+0%'))
-            pitch = str(options.get('pitch', '+0Hz'))
-            volume = str(options.get('volume', '+0%'))
+            def signed_option(value, unit, default):
+                if value is None: return default
+                text = str(value).strip()
+                if text and text[0] not in '+-' and text[-1:] in ('%', 'H', 'h', 'z', 'Z'):
+                    text = '+' + text
+                return text or default
+            rate = signed_option(options.get('rate'), '%', '+0%')
+            pitch = signed_option(options.get('pitch'), 'Hz', '+0Hz')
+            volume = signed_option(options.get('volume'), '%', '+0%')
             if not text: self.reply(400, json.dumps({'error':'Textul TTS este gol'})); return
             with tempfile.TemporaryDirectory() as folder:
                 target = Path(folder) / 'voice.mp3'
