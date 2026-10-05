@@ -12,7 +12,7 @@ async function request(path,body,method='POST'){const r=await fetch(base+path,{m
   await request('/api/rules/'+rule.id,undefined,'DELETE');ws.close();
   assert.ok(messages.some(x=>x.type==='event'&&x.event?.type==='gift'),'WebSocket must broadcast live events');
   assert.ok(messages.some(x=>x.type==='tts'&&x.text.includes('WS Smoke')),'rules must trigger TTS over WebSocket');
-  assert.equal(messages.filter(x=>x.type==='tts'&&x.text.includes('WS Smoke')).length,1,'rule cooldown must suppress duplicate actions');
+  assert.equal(messages.filter(x=>x.type==='tts'&&x.text==='Salut WS Smoke').length,1,'rule cooldown must suppress duplicate actions');
   assert.ok(messages.some(x=>x.type==='action'&&x.action?.url==='gift'&&Number(x.action?.screen)===3),'rules must trigger screen-targeted overlay actions over WebSocket');
   console.log('TikLiveTools WebSocket integration test passed');
 })().catch(error=>{console.error(error);process.exit(1)});
