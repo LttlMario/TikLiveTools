@@ -15,7 +15,7 @@ npm start
 
 4. Deschide `http://localhost:3000`. La prima pornire aplicația creează automat baza `tik_live_tools` și tabelele lipsă; importul manual în phpMyAdmin nu mai este necesar.
 
-Pentru conectarea TikTok complet locală: autentifică-te în TikTok în browser, copiază valoarea cookie-ului `sessionid` al contului tău și introdu-o în Setup, apoi username-ul contului live. Valoarea rămâne doar în baza locală MariaDB și nu este trimisă către un signer terț; nu o publica în GitHub sau în capturi de ecran.
+Pentru conectarea TikTok locală: introdu username-ul contului live în Setup. Dacă TikTok permite WebSocket public, aplicația poate primi evenimente fără cookie; pentru chatbot și trimiterea mesajelor este necesar cookie-ul `sessionid` al contului tău, copiat din browser și introdus în Setup. Valoarea rămâne doar în baza locală MariaDB și nu este trimisă către un signer terț; nu o publica în GitHub sau în capturi de ecran.
 
 Overlay-urile sunt disponibile la adrese de tipul:
 
@@ -33,7 +33,7 @@ Galeria locală include categorii pentru goals, countdowns, follower/gift counts
 
 Arhiva personală de 966 modele de cadouri este disponibilă în `public/assets/gifts`, iar pagina Gift Browser oferă căutare și previzualizare.
 
-Integrarea TikTok folosește un conector open-source local, fără cont Euler Stream, server de semnare sau API key extern. Pentru a evita orice signer extern, conexiunea folosește cookie-ul local `sessionid` al contului TikTok, configurat în Setup sau `TIKTOK_SESSION_ID`. TikTok poate schimba protocolul de live fără notificare, de aceea conectorul este izolat în `src/tiktok.js`, iar aplicația nu afișează „conectat” până când handshake-ul real nu reușește.
+Integrarea TikTok folosește un conector open-source local, fără cont Euler Stream sau API key extern. Cookie-ul local `sessionid` este opțional pentru recepția evenimentelor, dar obligatoriu pentru `sendMessage`/chatbot. TikTok poate schimba protocolul de live fără notificare, de aceea conectorul este izolat în `src/tiktok.js`, iar aplicația nu afișează „conectat” până când handshake-ul real nu reușește.
 
 ## Funcții implementate local
 
