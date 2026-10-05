@@ -32,7 +32,7 @@ const tiktok=new TikTokService(processEvent,status=>{Object.assign(state,status)
 wss.on('connection',client=>{clients.add(client);client.send(JSON.stringify({type:'state',state}));client.on('close',()=>clients.delete(client))});
 app.get('/api/status',(_q,r)=>r.json(state));
 app.get('/api/gifts',(_q,r)=>r.json(state.gifts||[]));
-app.post('/api/connect',async(q,r)=>{try{state.username=String(q.body.username||'').trim();await tiktok.connect(state.username);r.json({ok:true,state})}catch(e){state.connected=false;r.status(400).json({ok:false,error:e.message})}});
+app.post('/api/connect',async(q,r)=>{try{state.username=String(q.body.username||'').trim();await db.resetStreamGoals();await tiktok.connect(state.username);r.json({ok:true,state})}catch(e){state.connected=false;r.status(400).json({ok:false,error:e.message})}});
 app.post('/api/disconnect',async(_q,r)=>{await tiktok.disconnect();state.connected=false;broadcast({type:'status',status:state});r.json({ok:true})});
 app.post('/api/obs/connect',async(q,r)=>{try{await obs.connect(q.body.url||'ws://127.0.0.1:4455',q.body.password||'');state.obsConnected=true;r.json({ok:true,scenes:await obs.getScenes()})}catch(e){state.obsConnected=false;r.status(400).json({ok:false,error:e.message})}});
 app.post('/api/obs/disconnect',async(_q,r)=>{await obs.disconnect();state.obsConnected=false;r.json({ok:true})});
