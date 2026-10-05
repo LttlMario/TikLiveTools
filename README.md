@@ -75,3 +75,7 @@ https://live.panel-pro.ro/?backend=https://adresa-publica-a-backendului/
 ```
 
 Backend-ul trebuie să fie disponibil prin HTTPS și WebSocket (`wss://`). Serverul local permite CORS pentru `https://live.panel-pro.ro`; conexiunea TikTok, XAMPP, OBS și secretele rămân pe calculatorul personal.
+
+### Tunel temporar pentru uz personal
+
+După instalarea `cloudflared`, pornește `start-public-tunnel.ps1` din PowerShell cât timp folosești live-ul. Cloudflare va afișa un URL HTTPS temporar; introdu acel URL în `Setup > Backend public`. Oprirea ferestrei închide imediat accesul public.
