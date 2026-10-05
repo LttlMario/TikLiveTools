@@ -40,5 +40,5 @@
     }
   }
   function run(){enhanceActions();enhanceSounds();enhanceCommands();enhanceSongs();enhanceObs();enhanceTikTok();enhanceDiscord();enhancePoints();enhanceProfiles();enhanceConfig();}
-  window.addEventListener('hashchange',run);run();
+  window.addEventListener('hashchange',run);window.addEventListener('tiklivetools:app-ready',run);run();
 })();
