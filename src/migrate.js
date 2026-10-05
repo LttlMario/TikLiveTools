@@ -16,5 +16,17 @@ async function migrate(){
   for(const sql of statements)await db.pool.query(sql);
   try{await db.pool.query("ALTER TABLE profiles ADD COLUMN session_id TEXT NULL")}catch(e){if(!/duplicate|exists/i.test(String(e.message)))throw e}
   await db.pool.query("INSERT INTO profiles (name, tiktok_username, is_active) VALUES ('Profil principal', NULL, 1) ON DUPLICATE KEY UPDATE name=VALUES(name)");
+  const standardSounds={
+    'Gift Alert':{kind:'gift',name:'Gift alert'},
+    'Sub Alert':{kind:'action',name:'Subscription alert'}
+  };
+  const [rules]=await db.pool.query("SELECT id,name,actions FROM automation_rules WHERE name IN ('Gift Alert','Sub Alert')");
+  for(const rule of rules){
+    const actions=typeof rule.actions==='string'?JSON.parse(rule.actions||'[]'):rule.actions||[];
+    if(!actions.some(action=>action.type==='sound')){
+      actions.push({type:'sound',...standardSounds[rule.name]});
+      await db.pool.execute('UPDATE automation_rules SET actions=? WHERE id=?',[JSON.stringify(actions),rule.id]);
+    }
+  }
 }
 module.exports=migrate;
