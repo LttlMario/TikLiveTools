@@ -52,6 +52,12 @@ async function processEvent(event,{previewOnly=false}={}){state.lastEvent=event;
 const tiktok=new TikTokService(processEvent,status=>{Object.assign(state,status);broadcast({type:'status',status})},gifts=>{if(Array.isArray(gifts)&&gifts.length){state.gifts=gifts;try{fs.writeFileSync(giftCacheFile,JSON.stringify(gifts))}catch{}}else if(!state.connected)state.gifts=cachedGifts;broadcast({type:'gifts',gifts:state.gifts})});
 wss.on('connection',client=>{clients.add(client);client.send(JSON.stringify({type:'state',state}));client.on('close',()=>clients.delete(client))});
 app.get('/api/status',(_q,r)=>r.json(state));
+app.get('/api/health',async(_q,r)=>{
+  let tts=false;
+  try{const probe=await fetch(`${ttsServiceUrl}/voices`,{signal:AbortSignal.timeout(1500)});tts=probe.ok}catch{}
+  const result={ok:Boolean(state.db),database:state.db,tiktok:state.connected,obs:state.obsConnected,tts,uptimeSeconds:Math.floor(process.uptime()),lastEventType:state.lastEvent?.type||null};
+  r.status(result.ok?200:503).json(result);
+});
 app.get('/api/hotkeys',(_q,r)=>r.json({enabled:Boolean(hotkeys.proc),bindings:{1:'Ctrl+Alt+F1 • Timer',2:'Ctrl+Alt+F2 • Wheel Spin',3:'Ctrl+Alt+F3 • Next Song',4:'Ctrl+Alt+F4 • Next OBS Scene'}}));
 app.post('/api/hotkeys/trigger',async(q,r)=>{try{await runHotkey(String(q.body.action||''));r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/api/gifts',(_q,r)=>r.json(state.gifts||[]));
