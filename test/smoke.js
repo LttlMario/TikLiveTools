@@ -5,6 +5,7 @@ async function post(path,body){const r=await fetch(base+path,{method:'POST',head
 (async()=>{
   const status=await get('/api/status');
   assert.equal(status.db,true,'MariaDB is not connected');
+  const spotify=await get('/api/spotify/status');assert.equal(typeof spotify.configured,'boolean','Spotify status must be available');
   const hotkeys=await get('/api/hotkeys');assert.ok(hotkeys.bindings['1'],'global hotkey bridge must expose bindings');
   const manifest=await get('/assets/gifts/manifest.json');
   assert.equal(manifest.length,966,'Gift manifest must contain 966 assets');
