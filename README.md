@@ -49,3 +49,15 @@ Integrarea TikTok folosește un conector open-source local, fără cont Euler St
 - Song requests au endpoint separat de cerere cu `pointsCost`; dacă utilizatorul are points insuficiente, cererea este respinsă atomic.
 
 Pentru verificare rapidă fără live real, folosește butoanele `Test gift`, `Test like`, `Test follow` din galerie. Acestea trec prin același pipeline de DB, goals, rules, sunete și WebSocket ca evenimentele primite de la TikTok.
+
+## Overlay-uri publice prin GitHub Pages
+
+Aplicația poate rămâne locală, iar overlay-urile pot fi publicate separat. Workflow-ul `Publish public overlays` construiește automat rutele statice din `public/overlays` în GitHub Pages. Backend-ul, MariaDB, TikTok LIVE și OBS rămân pe calculatorul local.
+
+Pentru ca un overlay public să primească evenimente live, adaugă URL-ul HTTPS al backend-ului disponibil printr-un tunel securizat:
+
+```text
+https://<cont>.github.io/<repository>/overlay/firework/?backend=https://<backend-public>/
+```
+
+Parametrul `backend` este opțional pentru rularea locală. Nu pune niciodată `sessionid`, parole OBS, fișiere `.env` sau datele MariaDB în repository; acestea rămân în configurația locală.
