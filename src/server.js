@@ -69,6 +69,7 @@ app.get('/api/songs',async(_q,r)=>{try{r.json(await db.listSongs())}catch(e){r.s
 app.post('/api/songs',async(q,r)=>{try{r.json({ok:true,id:await db.addSong(q.body)})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.post('/api/songs/request',async(q,r)=>{try{r.json({ok:true,id:await db.requestSong(q.body)})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.patch('/api/songs/:id',async(q,r)=>{try{await db.updateSong(q.params.id,q.body.status);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
+app.post('/api/songs/next',async(_q,r)=>{try{r.json({ok:true,id:await db.advanceSong()})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/api/sounds',async(_q,r)=>{try{r.json(await db.listSoundAlerts())}catch(e){r.status(500).json({error:e.message})}});
 app.post('/api/uploads/sound',upload.single('file'),(q,r)=>{if(!q.file)return r.status(400).json({error:'Selectează un fișier audio valid.'});r.json({ok:true,url:`/uploads/sounds/${q.file.filename}`,name:q.file.originalname})});
 app.post('/api/sounds',async(q,r)=>{try{r.json({ok:true,id:await db.saveSoundAlert(q.body)})}catch(e){r.status(400).json({ok:false,error:e.message})}});
