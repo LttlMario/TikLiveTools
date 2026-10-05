@@ -23,6 +23,7 @@ assert.doesNotMatch(publicOverlayScript,/name==='top-likes'\|\|name==='leaderboa
 assert.match(publicOverlayScript,/m\.type==='tts'&&name==='action-screen'/,'TTS must be restricted to the Actions overlay');
 assert.match(publicOverlayScript,/m\.type==='tts'&&name==='action-screen'&&\(!screenId\|\|!target\|\|screenId===target\)/,'Actions TTS must respect its target screen');
 assert.doesNotMatch(publicOverlayScript,/m\.type==='tts'\)speakOverlayTts/,'ordinary overlays must not replay global TTS messages');
+assert.match(publicOverlayScript,/m\.type==='sound'&&name==='action-screen'/,'global sound alerts must be isolated to the Actions overlay');
 assert.match(publicUi,/secretsOmitted:true/,'configuration exports must explicitly omit local secrets');
 assert.ok(fs.existsSync(path.join(out,'assets','gifts','manifest.json')),'public build must contain gift assets');
 assert.equal(fs.readFileSync(path.join(out,'CNAME'),'utf8').trim(),'live.panel-pro.ro','public build must target the configured domain');
