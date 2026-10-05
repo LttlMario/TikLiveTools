@@ -18,6 +18,13 @@ async function request(path,body,method='POST'){const r=await fetch(base+path,{m
   assert.ok(messages.some(x=>x.type==='action'&&x.action?.url==='gift'&&Number(x.action?.screen)===3),'rules must trigger screen-targeted overlay actions over WebSocket');
   assert.ok(messages.some(x=>x.type==='sound'&&x.sound?.kind==='gift'&&x.sound?.name==='Gift alert'),'gift events must trigger configured sound actions over WebSocket');
   assert.ok(messages.some(x=>x.type==='sound'&&Number(x.screen)===3),'sound action must carry its target screen');
+  const sound=await request('/api/sounds',{name:'ws-preview-sound-'+Date.now(),triggerType:'gift',triggerConfig:{giftName:'Rose'},filePath:'/uploads/sounds/ws-preview.mp3',volume:.4});
+  messages.length=0;
+  await request(`/api/sounds/${sound.id}/test`,{});
+  await new Promise(resolve=>setTimeout(resolve,120));
+  assert.ok(messages.some(x=>x.type==='sound'&&Number(x.sound?.id)===Number(sound.id)),'sound preview must broadcast the selected alert');
+  assert.equal(messages.some(x=>['event','tts','action'].includes(x.type)),false,'sound preview must not emit a LIVE event, TTS or action');
+  await request(`/api/sounds/${sound.id}`,undefined,'DELETE');
   messages.length=0;
   await request('/api/test-event',{type:'gift',uniqueId:'gallery_preview_user',displayName:'Gallery Preview',giftName:'Rose',coins:5,previewOnly:true,previewOverlay:'firework'});
   await new Promise(resolve=>setTimeout(resolve,200));
