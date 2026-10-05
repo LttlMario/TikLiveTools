@@ -16,7 +16,6 @@ class TikTokService{
     if(!username)throw new Error('Introdu username-ul TikTok.');
     await this.disconnect();
     const opts={enableExtendedGiftInfo:true,processInitialData:true,fetchRoomInfoOnConnect:true};
-    if(process.env.TIKTOK_SIGN_API_KEY)opts.signApiKey=process.env.TIKTOK_SIGN_API_KEY;
     this.connection=new TikTokLiveConnection(username.replace(/^@/,''),opts);
     const emit=(type,d={})=>this.onEvent({type,...d,payload:d});
     this.connection.on(ControlEvent.CONNECTED,s=>this.onStatus({connected:true,roomId:s.roomId,username}));
