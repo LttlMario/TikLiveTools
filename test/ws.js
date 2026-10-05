@@ -10,12 +10,17 @@ async function request(path,body,method='POST'){const r=await fetch(base+path,{m
   await request('/api/test-event',{type:'gift',uniqueId:'ws_smoke_user',displayName:'WS Smoke',giftName:'Rose',coins:2});
   await request('/api/test-event',{type:'gift',uniqueId:'ws_smoke_user',displayName:'WS Smoke',giftName:'Rose',coins:2});
   await new Promise(resolve=>setTimeout(resolve,350));
-  await request('/api/rules/'+rule.id,undefined,'DELETE');ws.close();
   assert.ok(messages.some(x=>x.type==='event'&&x.event?.type==='gift'),'WebSocket must broadcast live events');
   assert.ok(messages.some(x=>x.type==='tts'&&x.text.includes('WS Smoke')),'rules must trigger TTS over WebSocket');
   assert.ok(messages.some(x=>x.type==='tts'&&x.text==='Salut WS Smoke'&&x.settings?.voice==='ro-RO-AlinaNeural'),'TTS event must carry the saved Neural voice');
   assert.equal(messages.filter(x=>x.type==='tts'&&x.text==='Salut WS Smoke').length,1,'rule cooldown must suppress duplicate actions');
   assert.ok(messages.some(x=>x.type==='action'&&x.action?.url==='gift'&&Number(x.action?.screen)===3),'rules must trigger screen-targeted overlay actions over WebSocket');
   assert.ok(messages.some(x=>x.type==='sound'&&x.sound?.kind==='gift'&&x.sound?.name==='Gift alert'),'gift events must trigger configured sound actions over WebSocket');
+  messages.length=0;
+  await request('/api/test-event',{type:'gift',uniqueId:'gallery_preview_user',displayName:'Gallery Preview',giftName:'Rose',coins:5,previewOnly:true,previewOverlay:'firework'});
+  await new Promise(resolve=>setTimeout(resolve,200));
+  assert.ok(messages.some(x=>x.type==='event'&&x.event?.previewOnly===true),'gallery preview must broadcast its visual event');
+  assert.equal(messages.some(x=>['tts','sound','action'].includes(x.type)),false,'gallery preview must not trigger TTS, sound alerts or actions');
+  await request('/api/rules/'+rule.id,undefined,'DELETE');ws.close();
   console.log('TikLiveTools WebSocket integration test passed');
 })().catch(error=>{console.error(error);process.exit(1)});
