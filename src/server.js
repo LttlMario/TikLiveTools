@@ -1,7 +1,9 @@
 const path=require('path');
+const fs=require('fs');
 const http=require('http');
 const express=require('express');
 const WebSocket=require('ws');
+const multer=require('multer');
 require('dotenv').config();
 const db=require('./db');
 const migrate=require('./migrate');
@@ -11,6 +13,8 @@ const {ActionEngine}=require('./actions');
 const DiscordNotifier=require('./discord');
 
 const app=express();
+const soundDir=path.join(__dirname,'..','public','uploads','sounds');fs.mkdirSync(soundDir,{recursive:true});
+const upload=multer({storage:multer.diskStorage({destination:soundDir,filename:(_req,file,cb)=>{const safe=path.basename(file.originalname).replace(/[^a-zA-Z0-9._-]/g,'_');cb(null,`${Date.now()}-${safe}`)}}),limits:{fileSize:15*1024*1024},fileFilter:(_req,file,cb)=>cb(null,/^audio\//i.test(file.mimetype))});
 const server=http.createServer(app);
 const wss=new WebSocket.Server({server,path:'/ws'});
 const clients=new Set();
@@ -54,6 +58,7 @@ app.get('/api/songs',async(_q,r)=>{try{r.json(await db.listSongs())}catch(e){r.s
 app.post('/api/songs',async(q,r)=>{try{r.json({ok:true,id:await db.addSong(q.body)})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.patch('/api/songs/:id',async(q,r)=>{try{await db.updateSong(q.params.id,q.body.status);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/api/sounds',async(_q,r)=>{try{r.json(await db.listSoundAlerts())}catch(e){r.status(500).json({error:e.message})}});
+app.post('/api/uploads/sound',upload.single('file'),(q,r)=>{if(!q.file)return r.status(400).json({error:'Selectează un fișier audio valid.'});r.json({ok:true,url:`/uploads/sounds/${q.file.filename}`,name:q.file.originalname})});
 app.post('/api/sounds',async(q,r)=>{try{r.json({ok:true,id:await db.saveSoundAlert(q.body)})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/api/overlays',async(_q,r)=>{try{r.json(await db.listOverlays())}catch(e){r.status(500).json({error:e.message})}});
 app.post('/api/overlays',async(q,r)=>{try{await db.saveOverlay(q.body);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
