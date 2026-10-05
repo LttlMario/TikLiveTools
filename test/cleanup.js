@@ -3,8 +3,8 @@ const db=require('../src/db');
 (async()=>{
   const ids=['preview_viewer','preview_liker','preview_follower','ws_smoke_user','smoke_points_user','smoke_goal_user','smoke_likeathon','smoke_challenge','smoke_coinmatch','smoke_penalty','smoke_halving','smoke_drop_user'];
   const marks=ids.map(()=>'?').join(',');
-  await db.pool.execute(`DELETE FROM live_events WHERE unique_id LIKE 'smoke_%' OR unique_id LIKE 'ws_smoke_%' OR unique_id IN (${marks})`,ids);
-  await db.pool.execute(`DELETE FROM viewers WHERE unique_id LIKE 'smoke_%' OR unique_id LIKE 'ws_smoke_%' OR unique_id IN (${marks})`,ids);
+  await db.pool.execute(`DELETE FROM live_events WHERE unique_id LIKE 'smoke_%' OR unique_id LIKE 'ws_smoke_%' OR unique_id LIKE 'gallery_preview_%' OR unique_id IN (${marks})`,ids);
+  await db.pool.execute(`DELETE FROM viewers WHERE unique_id LIKE 'smoke_%' OR unique_id LIKE 'ws_smoke_%' OR unique_id LIKE 'gallery_preview_%' OR unique_id IN (${marks})`,ids);
   await db.pool.execute("DELETE FROM profiles WHERE name LIKE 'Smoke Profile %'");
   await db.pool.execute("DELETE FROM automation_rules WHERE name LIKE 'Smoke %' OR name LIKE 'ws-smoke-%'");
   await db.pool.execute("DELETE FROM goals WHERE name LIKE 'Smoke %'");
