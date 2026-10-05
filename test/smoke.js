@@ -4,7 +4,7 @@ async function get(path){const r=await fetch(base+path);assert.equal(r.ok,true,`
 async function post(path,body){const r=await fetch(base+path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body||{})});assert.equal(r.ok,true,`${path} returned ${r.status}`);return r.json()}
 async function expectStatus(path,body,status){const r=await fetch(base+path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body||{})});assert.equal(r.status,status,`${path} expected ${status}, got ${r.status}`);return r.json()}
 (async()=>{
-  const status=await get('/api/status');const profiles=await get('/api/profiles');assert.ok(profiles[0]&&Object.prototype.hasOwnProperty.call(profiles[0],'session_id'),'profiles must support local TikTok session storage');
+  const status=await get('/api/status');const profiles=await get('/api/profiles');assert.ok(profiles[0]&&Object.prototype.hasOwnProperty.call(profiles[0],'session_id'),'profiles must support local TikTok session storage');const viewers=await get('/api/viewers?limit=5');assert.ok(Array.isArray(viewers),'viewer database endpoint must return an array');
   assert.equal(status.db,true,'MariaDB is not connected');
   const spotify=await get('/api/spotify/status');assert.equal(typeof spotify.configured,'boolean','Spotify status must be available');
   const hotkeys=await get('/api/hotkeys');assert.ok(hotkeys.bindings['1'],'global hotkey bridge must expose bindings');
