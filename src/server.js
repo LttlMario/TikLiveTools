@@ -15,6 +15,7 @@ const wss=new WebSocket.Server({server,path:'/ws'});
 const clients=new Set();
 const state={connected:false,obsConnected:false,username:process.env.TIKTOK_USERNAME||'',lastEvent:null,db:false};
 app.use(express.json({limit:'2mb'}));
+app.use((req,res,next)=>{res.set('Cache-Control','no-store');next()});
 app.use(express.static(path.join(__dirname,'..','public')));
 function broadcast(message){const data=JSON.stringify(message);for(const c of clients)if(c.readyState===WebSocket.OPEN)c.send(data)}
 const obs=new ObsService(broadcast);
