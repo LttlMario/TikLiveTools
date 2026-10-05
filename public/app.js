@@ -1,4 +1,4 @@
-const $=id=>document.getElementById(id),base=location.origin,params=new URLSearchParams(location.search),configuredBackend=params.get('backend')||localStorage.getItem('tiklivetools_backend')||'';
+const $=id=>document.getElementById(id),base=location.origin,params=new URLSearchParams(location.search),configuredBackend=params.get('backend')||localStorage.getItem('tiklivetools_backend')||localStorage.getItem('tiklivetools_public_backend')||'';
 const backend=(()=>{try{const u=new URL(configuredBackend||location.origin);return /^https?:$/.test(u.protocol)?u.origin:''}catch{return ''}})();
 const apiUrl=path=>`${backend}${path}`;
 const socketUrl=(()=>{try{const u=new URL(backend||location.origin);u.protocol=u.protocol==='https:'?'wss:':'ws:';u.pathname='/ws';u.search='';return u.toString()}catch{return ''}})();
