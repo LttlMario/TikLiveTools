@@ -21,5 +21,6 @@ const html='<!doctype html><html lang="ro"><head><meta charset="utf-8"><meta nam
 for(const slug of slugs){const dir=path.join(routeDir,slug);fs.mkdirSync(dir,{recursive:true});fs.writeFileSync(path.join(dir,'index.html'),html)}
 const links=slugs.map(slug=>`<li><a href="overlay/${slug}/">${slug}</a></li>`).join('');
 fs.writeFileSync(path.join(out,'index.html'),`<!doctype html><html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TikLiveTools Public Overlays</title><style>body{font:16px system-ui;background:#111;color:#eee;max-width:760px;margin:40px auto;padding:0 20px}a{color:#ff4f86}li{margin:8px 0}</style></head><body><h1>TikLiveTools — Public Overlays</h1><p>Overlay-urile sunt servite public de GitHub Pages. Pentru evenimente live, adaugă parametrul <code>?backend=https://adresa-backendului</code>.</p><ul>${links}</ul></body></html>`);
+fs.writeFileSync(path.join(out,'CNAME'),'live.panel-pro.ro');
 fs.writeFileSync(path.join(out,'.nojekyll'),'');
 console.log(`Built ${slugs.length} public overlay routes in ${path.relative(root,out)}`);
