@@ -10,7 +10,10 @@ assert.ok(fs.existsSync(path.join(out,'tts-edge.js')),'public build must contain
 const publicApp=fs.readFileSync(path.join(out,'app.js'),'utf8');
 const publicUi=fs.readFileSync(path.join(out,'ui-enhancements.js'),'utf8');
 const publicOverlayScript=fs.readFileSync(path.join(out,'overlays','advanced.js'),'utf8');
+const publicTts=fs.readFileSync(path.join(out,'tts-edge.js'),'utf8');
 assert.match(publicApp,/tiklivetools_public_backend/,'public app must reuse the Actions backend setting for overlay links');
+assert.match(publicTts,/ttsApi\('\/api\/tts\/voices'\)/,'public TTS catalog must use the configured backend');
+assert.match(publicTts,/ttsApi\('\/api\/tts\/synthesize'\)/,'public TTS synthesis must use the configured backend');
 assert.match(publicApp,/Testează \$\{label\}/,'gallery buttons must be named for the selected overlay');
 assert.match(publicApp,/previewOverlay=overlay/,'gallery tests must target only the selected overlay');
 assert.match(publicApp,/join:new Set\(\['viewer-count'\]\)/,'viewer count must use the real join event');
