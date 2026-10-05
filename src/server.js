@@ -84,6 +84,7 @@ app.post('/api/sounds',async(q,r)=>{try{r.json({ok:true,id:await db.saveSoundAle
 app.delete('/api/sounds/:id',async(q,r)=>{try{await db.deleteSoundAlert(q.params.id);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/api/overlays',async(_q,r)=>{try{r.json(await db.listOverlays())}catch(e){r.status(500).json({error:e.message})}});
 app.post('/api/overlays',async(q,r)=>{try{await db.saveOverlay(q.body);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
+app.delete('/api/overlays/:slug',async(q,r)=>{try{await db.deleteOverlay(q.params.slug);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/api/games/:type',async(q,r)=>{try{r.json(await db.getGame(q.params.type))}catch(e){r.status(500).json({error:e.message})}});
 app.post('/api/games/:type/start',async(q,r)=>{try{r.json({ok:true,id:await db.startGame(q.params.type,q.body||{})})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.post('/api/games/:id/spin',async(q,r)=>{try{r.json({ok:true,game:await db.spinGame(q.params.id)})}catch(e){r.status(400).json({ok:false,error:e.message})}});
