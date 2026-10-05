@@ -1,0 +1,7 @@
+const mysql = require('mysql2/promise');
+require('dotenv').config();
+const pool = mysql.createPool({host:process.env.DB_HOST||'127.0.0.1',port:Number(process.env.DB_PORT||3306),database:process.env.DB_NAME||'tik_live_tools',user:process.env.DB_USER||'root',password:process.env.DB_PASSWORD||'',waitForConnections:true,connectionLimit:5,charset:'utf8mb4'});
+async function checkDatabase(){const c=await pool.getConnection();try{await c.ping();return true}finally{c.release()}}
+async function saveEvent(e){const [r]=await pool.execute('INSERT INTO live_events(event_type,unique_id,display_name,gift_name,gift_id,coins,quantity,comment_text,payload) VALUES(?,?,?,?,?,?,?,?,?)',[e.type,e.uniqueId||null,e.displayName||null,e.giftName||null,e.giftId||null,e.coins||0,e.quantity||1,e.comment||null,JSON.stringify(e.payload||{})]);return r.insertId}
+async function upsertViewer(e){if(!e.uniqueId)return;await pool.execute('INSERT INTO viewers(unique_id,display_name,avatar_url,first_seen_at,last_seen_at) VALUES(?,?,?,NOW(),NOW()) ON DUPLICATE KEY UPDATE display_name=VALUES(display_name),avatar_url=VALUES(avatar_url),last_seen_at=NOW()',[e.uniqueId,e.displayName||e.uniqueId,e.avatarUrl||null]);if(e.type==='gift')await pool.execute('UPDATE viewers SET total_coins=total_coins+?,points=points+? WHERE unique_id=?',[e.coins||0,e.coins||0,e.uniqueId]);if(e.type==='like')await pool.execute('UPDATE viewers SET total_likes=total_likes+?,points=points+? WHERE unique_id=?',[e.quantity||1,e.quantity||1,e.uniqueId])}
+module.exports={pool,checkDatabase,saveEvent,upsertViewer};

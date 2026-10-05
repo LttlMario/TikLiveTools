@@ -1,0 +1,21 @@
+{
+  "name": "tiklivetools",
+  "version": "1.0.0",
+  "description": "Local TikTok LIVE automation tools for LIVE Studio and OBS",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1",
+    "mysql2": "^3.24.5",
+    "tiktok-live-connector": "^2.5.0",
+    "ws": "^8.22.0"
+  }
+}
