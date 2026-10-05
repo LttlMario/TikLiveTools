@@ -13,6 +13,8 @@ const publicOverlayScript=fs.readFileSync(path.join(out,'overlays','advanced.js'
 assert.match(publicApp,/tiklivetools_public_backend/,'public app must reuse the Actions backend setting for overlay links');
 assert.match(publicApp,/Testează \$\{label\}/,'gallery buttons must be named for the selected overlay');
 assert.match(publicApp,/previewOverlay=overlay/,'gallery tests must target only the selected overlay');
+assert.match(publicApp,/join:new Set\(\['viewer-count'\]\)/,'viewer count must use the real join event');
+assert.match(publicApp,/type==='join'\?\{type:'join'/,'viewer count test must emit a join event');
 assert.doesNotMatch(publicApp,/data-test="gift" data-overlay="\$\{name\}">Test gift/,'gallery must not render generic Test gift buttons');
 assert.match(publicOverlayScript,/const eventCues=\{/,'overlay sounds must use an event-specific cue map');
 assert.match(publicOverlayScript,/firework:\{gift:'firework'\}/,'firework must have its own gift cue');
