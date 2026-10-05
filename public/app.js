@@ -53,7 +53,7 @@ const goalTypeSelect=$('goalType');if(goalTypeSelect&&!goalTypeSelect.querySelec
 window.dispatchEvent(new Event('tiklivetools:app-ready'));
 
 // Adds the locale/accent choices used by the editor-style TTS selector.
-// The voice list itself is populated only from voices installed in Windows/browser.
+// The voice list is replaced by the local Neural catalog when the TTS service is ready.
 (function addTtsLocales(){
   const locales=[
     ['ro-RO','Română — România'],['en-US','English — United States'],['en-GB','English — United Kingdom'],['en-AU','English — Australia'],['en-CA','English — Canada'],['en-IN','English — India'],
