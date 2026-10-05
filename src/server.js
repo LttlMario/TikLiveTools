@@ -8,21 +8,24 @@ const migrate=require('./migrate');
 const TikTokService=require('./tiktok');
 const ObsService=require('./obs');
 const {ActionEngine}=require('./actions');
+const DiscordNotifier=require('./discord');
 
 const app=express();
 const server=http.createServer(app);
 const wss=new WebSocket.Server({server,path:'/ws'});
 const clients=new Set();
-const state={connected:false,obsConnected:false,username:process.env.TIKTOK_USERNAME||'',lastEvent:null,db:false};
+const state={connected:false,obsConnected:false,username:process.env.TIKTOK_USERNAME||'',lastEvent:null,db:false,gifts:[]};
 app.use(express.json({limit:'2mb'}));
 app.use((req,res,next)=>{res.set('Cache-Control','no-store');next()});
 app.use(express.static(path.join(__dirname,'..','public')));
 function broadcast(message){const data=JSON.stringify(message);for(const c of clients)if(c.readyState===WebSocket.OPEN)c.send(data)}
 const obs=new ObsService(broadcast);
+const discord=new DiscordNotifier(()=>db.getSettings());
 const actions=new ActionEngine({getRules:()=>db.getRules(),broadcast,obs});
-const tiktok=new TikTokService(async event=>{state.lastEvent=event;try{if(state.db){await db.saveEvent(event);await db.upsertViewer(event);await actions.process(event)}}catch(error){broadcast({type:'database_error',message:error.message})}broadcast({type:'event',event})},status=>{Object.assign(state,status);broadcast({type:'status',status})});
+const tiktok=new TikTokService(async event=>{state.lastEvent=event;try{if(state.db){await db.saveEvent(event);await db.upsertViewer(event);await actions.process(event);await discord.event(event)}}catch(error){broadcast({type:'database_error',message:error.message})}broadcast({type:'event',event})},status=>{Object.assign(state,status);broadcast({type:'status',status})},gifts=>{state.gifts=gifts||[];broadcast({type:'gifts',gifts:state.gifts})});
 wss.on('connection',client=>{clients.add(client);client.send(JSON.stringify({type:'state',state}));client.on('close',()=>clients.delete(client))});
 app.get('/api/status',(_q,r)=>r.json(state));
+app.get('/api/gifts',(_q,r)=>r.json(state.gifts||[]));
 app.post('/api/connect',async(q,r)=>{try{state.username=String(q.body.username||'').trim();await tiktok.connect(state.username);r.json({ok:true,state})}catch(e){state.connected=false;r.status(400).json({ok:false,error:e.message})}});
 app.post('/api/disconnect',async(_q,r)=>{await tiktok.disconnect();state.connected=false;broadcast({type:'status',status:state});r.json({ok:true})});
 app.post('/api/obs/connect',async(q,r)=>{try{await obs.connect(q.body.url||'ws://127.0.0.1:4455',q.body.password||'');state.obsConnected=true;r.json({ok:true,scenes:await obs.getScenes()})}catch(e){state.obsConnected=false;r.status(400).json({ok:false,error:e.message})}});
@@ -52,6 +55,9 @@ app.get('/api/sounds',async(_q,r)=>{try{r.json(await db.listSoundAlerts())}catch
 app.post('/api/sounds',async(q,r)=>{try{r.json({ok:true,id:await db.saveSoundAlert(q.body)})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/api/overlays',async(_q,r)=>{try{r.json(await db.listOverlays())}catch(e){r.status(500).json({error:e.message})}});
 app.post('/api/overlays',async(q,r)=>{try{await db.saveOverlay(q.body);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
+app.get('/api/games/:type',async(q,r)=>{try{r.json(await db.getGame(q.params.type))}catch(e){r.status(500).json({error:e.message})}});
+app.post('/api/games/:type/start',async(q,r)=>{try{r.json({ok:true,id:await db.startGame(q.params.type,q.body||{})})}catch(e){r.status(400).json({ok:false,error:e.message})}});
+app.post('/api/games/:id/finish',async(q,r)=>{try{await db.finishGame(q.params.id);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.post('/api/test-event',async(q,r)=>{const event={type:q.body.type||'gift',uniqueId:q.body.uniqueId||'local_test',displayName:q.body.displayName||'Local test',giftName:q.body.giftName||'Rose',coins:Number(q.body.coins||1),quantity:Number(q.body.quantity||1),comment:q.body.comment||'',payload:{test:true}};state.lastEvent=event;try{await db.saveEvent(event);await db.upsertViewer(event);await actions.process(event)}catch(e){return r.status(400).json({ok:false,error:e.message})}broadcast({type:'event',event});r.json({ok:true,event})});
-app.get('/overlay/:name',(q,r)=>r.sendFile(path.join(__dirname,'..','public','overlays','overlay.html')));
+app.get('/overlay/:name',(q,r)=>{const mainOverlays=new Set(['top-likes','top-coins','coin-jar','goals','leaderboard','alerts','gift-battle','firework','snow','social','emojify','wheel','timer']);const file=mainOverlays.has(q.params.name)?'overlay.html':'advanced.html';r.sendFile(path.join(__dirname,'..','public','overlays',file))});
 (async()=>{try{await db.checkDatabase();await migrate();state.db=true}catch(e){console.warn('Baza MySQL nu este conectata:',e.message)}const port=Number(process.env.PORT||3000);server.listen(port,()=>console.log(`TikLiveTools: http://localhost:${port}`))})();
