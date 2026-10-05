@@ -7,7 +7,11 @@ assert.ok(fs.existsSync(path.join(out,'index.html')),'public build must contain 
 assert.ok(fs.existsSync(path.join(out,'app.js')),'public build must contain the application script');
 assert.ok(fs.existsSync(path.join(out,'app.css')),'public build must contain the application stylesheet');
 assert.ok(fs.existsSync(path.join(out,'tts-edge.js')),'public build must contain the Neural TTS enhancement');
-assert.match(fs.readFileSync(path.join(out,'app.js'),'utf8'),/tiklivetools_public_backend/,'public app must reuse the Actions backend setting for overlay links');
+const publicApp=fs.readFileSync(path.join(out,'app.js'),'utf8');
+assert.match(publicApp,/tiklivetools_public_backend/,'public app must reuse the Actions backend setting for overlay links');
+assert.match(publicApp,/Testează \$\{label\}/,'gallery buttons must be named for the selected overlay');
+assert.match(publicApp,/previewOverlay=overlay/,'gallery tests must target only the selected overlay');
+assert.doesNotMatch(publicApp,/data-test="gift" data-overlay="\$\{name\}">Test gift/,'gallery must not render generic Test gift buttons');
 assert.ok(fs.existsSync(path.join(out,'assets','gifts','manifest.json')),'public build must contain gift assets');
 assert.equal(fs.readFileSync(path.join(out,'CNAME'),'utf8').trim(),'live.panel-pro.ro','public build must target the configured domain');
 for(const slug of ['firework','gift-cannon','gift-battle','gift-browser','coin-jar','top-likes','timer','wheel','song-requests','challenge','halving']){
