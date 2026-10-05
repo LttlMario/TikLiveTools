@@ -17,6 +17,8 @@ assert.match(publicOverlayScript,/const eventCues=\{/,'overlay sounds must use a
 assert.match(publicOverlayScript,/firework:\{gift:'firework'\}/,'firework must have its own gift cue');
 assert.match(publicOverlayScript,/'like-fountain':\{like:'fountain'\}/,'like fountain must have its own like cue');
 assert.doesNotMatch(publicOverlayScript,/name==='top-likes'\|\|name==='leaderboard'/,'static leaderboard overlays must not replay a sound for every like');
+assert.match(publicOverlayScript,/m\.type==='tts'&&name==='action-screen'/,'TTS must be restricted to the Actions overlay');
+assert.doesNotMatch(publicOverlayScript,/m\.type==='tts'\)speakOverlayTts/,'ordinary overlays must not replay global TTS messages');
 assert.ok(fs.existsSync(path.join(out,'assets','gifts','manifest.json')),'public build must contain gift assets');
 assert.equal(fs.readFileSync(path.join(out,'CNAME'),'utf8').trim(),'live.panel-pro.ro','public build must target the configured domain');
 for(const slug of ['firework','gift-cannon','gift-battle','gift-browser','coin-jar','top-likes','timer','wheel','song-requests','challenge','halving']){
