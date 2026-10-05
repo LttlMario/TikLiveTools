@@ -4,7 +4,7 @@ const TikTokService=require('../src/tiktok');
 const {template,matches}=require('../src/actions');
 const SpotifyService=require('../src/spotify');
 const gift=normalizeGift({giftId:7,giftDetails:{giftType:1,giftName:'Rose'},repeatCount:4,repeatEnd:true,diamondCount:4,user:{uniqueId:'viewer',nickname:'Viewer'}});
-assert.equal(gift.giftName,'Rose');assert.equal(gift.quantity,4);assert.equal(gift.giftType,1);assert.equal(gift.repeatEnd,true);assert.equal(typeof require('tiktok-live-connector').WebcastPushConnection,'function');const localTikTok=new TikTokService(()=>{},()=>{},()=>{});assert.rejects(()=>localTikTok.connect('viewer'),/sessionid/);localTikTok.connection={sendMessage:async text=>text};localTikTok.sendMessage('hello').then(x=>assert.equal(x,'hello'));
+assert.equal(gift.giftName,'Rose');assert.equal(gift.quantity,4);assert.equal(gift.coins,16);assert.equal(gift.giftType,1);assert.equal(gift.repeatEnd,true);assert.equal(typeof require('tiktok-live-connector').WebcastPushConnection,'function');const localTikTok=new TikTokService(()=>{},()=>{},()=>{});assert.rejects(()=>localTikTok.connect('viewer'),/sessionid/);localTikTok.connection={sendMessage:async text=>text};localTikTok.sendMessage('hello').then(x=>assert.equal(x,'hello'));
 const like=normalizeLike({likeCount:25,totalLikeCount:200,user:{uniqueId:'viewer',nickname:'Viewer'}});assert.equal(like.quantity,25);assert.equal(like.totalLikeCount,200);
 assert.equal(template('Mulțumesc {username}: {gift} ({coins})',{username:'Viewer',gift:'Rose',coins:4}),'Mulțumesc Viewer: Rose (4)');
 assert.equal(matches({enabled:1,trigger_type:'gift',trigger_config:{minCoins:5}},{type:'gift',coins:4}),false);
