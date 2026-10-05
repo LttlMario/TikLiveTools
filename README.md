@@ -51,7 +51,7 @@ Integrarea TikTok folosește un conector open-source local, fără cont Euler St
 - Bridge de hotkeys Windows: `Ctrl+Alt+F1` Timer, `Ctrl+Alt+F2` Wheel Spin, `Ctrl+Alt+F3` Next Song, `Ctrl+Alt+F4` Next OBS Scene. Acestea declanșează acțiuni locale chiar când OBS/LIVE Studio este activ; aceleași combinații pot fi configurate în LIVE Studio pentru acțiuni proprii.
 - Song requests au endpoint separat de cerere cu `pointsCost`; dacă utilizatorul are points insuficiente, cererea este respinsă atomic.
 
-Pentru verificare rapidă fără live real, folosește butoanele `Test gift`, `Test like`, `Test follow` din galerie. Acestea trec prin același pipeline de DB, goals, rules, sunete și WebSocket ca evenimentele primite de la TikTok.
+Pentru verificare rapidă fără live real, folosește butonul specific de pe fiecare card din galerie: de exemplu `Testează Gift Firework`, `Testează Gift Cannon`, `Testează Like Fountain` sau `Testează Follower Count`. Testul trimite numai evenimentul potrivit overlayului selectat, nu pornește acțiunile/TTS globale și nu este trimis către TikTok. Evenimentele reale primite de la TikTok folosesc în continuare pipeline-ul complet de DB, goals, rules, sunete și WebSocket.
 
 ### Actions & Events și testarea locală
 
