@@ -9,6 +9,7 @@ const db=require('./db');
 const migrate=require('./migrate');
 const TikTokService=require('./tiktok');
 const ObsService=require('./obs');
+const HotkeyService=require('./hotkeys');
 const {ActionEngine}=require('./actions');
 const DiscordNotifier=require('./discord');
 
@@ -26,11 +27,16 @@ function broadcast(message){const data=JSON.stringify(message);for(const c of cl
 const obs=new ObsService(broadcast);
 const discord=new DiscordNotifier(()=>db.getSettings());
 const actions=new ActionEngine({getRules:()=>db.getRules(),broadcast,obs});
+let hotkeySceneIndex=0;
+async function runHotkey(action){broadcast({type:'hotkey',action});if(action==='timer_toggle'){const current=await db.getGame('timer');if(current)await db.finishGame(current.id);else await db.startGame('timer',{durationSeconds:300})}if(action==='wheel_spin'){const current=await db.getGame('wheel');if(current)await db.spinGame(current.id);else{const id=await db.startGame('wheel',{options:['Premiu 1','Premiu 2','Premiu 3','Bonus']});await db.spinGame(id)}}if(action==='song_next')await db.advanceSong();if(action==='obs_scene_next'){const scenes=await obs.getScenes();if(scenes.length){hotkeySceneIndex=(hotkeySceneIndex+1)%scenes.length;await obs.setScene(scenes[hotkeySceneIndex].sceneName)}}broadcast({type:'hotkey_done',action})}
+const hotkeys=new HotkeyService(runHotkey);
 async function processAuxiliary(event){const [commands,sounds]=await Promise.all([db.listCommands(),db.listSoundAlerts()]);if(event.type==='chat'){const text=String(event.comment||'').trim();const command=text.split(/\s+/)[0].toLowerCase();const match=commands.find(c=>c.enabled&&String(c.command_name).toLowerCase()===command);if(match){broadcast({type:'chat_response',command:match.command_name,response:match.response_text,event});if(match.response_text)broadcast({type:'tts',text:String(match.response_text).replace(/\{username\}/g,event.displayName||event.uniqueId||'viewer')});await actions.run(match.actions,event)}}for(const sound of sounds){const c=sound.triggerConfig||{};if(!sound.enabled||sound.trigger_type!==event.type)continue;if(c.giftName&&String(c.giftName).toLowerCase()!==String(event.giftName||'').toLowerCase())continue;if(c.minCoins&&Number(event.coins||0)<Number(c.minCoins))continue;broadcast({type:'sound',sound:{id:sound.id,name:sound.name,url:sound.file_path,volume:Number(sound.volume||1)},event})}}
 async function processEvent(event){state.lastEvent=event;try{if(state.db){await db.saveEvent(event);await db.upsertViewer(event);await db.applyEventToGoals(event);await db.applyEventToGames(event);await actions.process(event);await processAuxiliary(event);await discord.event(event)}}catch(error){broadcast({type:'database_error',message:error.message})}broadcast({type:'event',event})}
 const tiktok=new TikTokService(processEvent,status=>{Object.assign(state,status);broadcast({type:'status',status})},gifts=>{state.gifts=gifts||[];broadcast({type:'gifts',gifts:state.gifts})});
 wss.on('connection',client=>{clients.add(client);client.send(JSON.stringify({type:'state',state}));client.on('close',()=>clients.delete(client))});
 app.get('/api/status',(_q,r)=>r.json(state));
+app.get('/api/hotkeys',(_q,r)=>r.json({enabled:Boolean(hotkeys.proc),bindings:{1:'Ctrl+Alt+F1 • Timer',2:'Ctrl+Alt+F2 • Wheel Spin',3:'Ctrl+Alt+F3 • Next Song',4:'Ctrl+Alt+F4 • Next OBS Scene'}}));
+app.post('/api/hotkeys/trigger',async(q,r)=>{try{await runHotkey(String(q.body.action||''));r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/api/gifts',(_q,r)=>r.json(state.gifts||[]));
 app.post('/api/connect',async(q,r)=>{try{state.username=String(q.body.username||'').trim();await db.resetStreamGoals();await tiktok.connect(state.username);r.json({ok:true,state})}catch(e){state.connected=false;r.status(400).json({ok:false,error:e.message})}});
 app.post('/api/disconnect',async(_q,r)=>{await tiktok.disconnect();state.connected=false;broadcast({type:'status',status:state});r.json({ok:true})});
@@ -69,4 +75,4 @@ app.post('/api/games/:id/spin',async(q,r)=>{try{r.json({ok:true,game:await db.sp
 app.post('/api/games/:id/finish',async(q,r)=>{try{await db.finishGame(q.params.id);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.post('/api/test-event',async(q,r)=>{const type=q.body.type||'gift';const event={type,uniqueId:q.body.uniqueId||'local_test',displayName:q.body.displayName||'Local test',giftName:type==='gift'?(q.body.giftName||'Rose'):null,coins:Number(q.body.coins??(type==='gift'?1:0)),quantity:Number(q.body.quantity??1),comment:q.body.comment||'',payload:{test:true}};try{await processEvent(event);r.json({ok:true,event})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/overlay/:name',(q,r)=>{const mainOverlays=new Set(['firework','snow','social','emojify']);const file=mainOverlays.has(q.params.name)?'overlay.html':'advanced.html';r.sendFile(path.join(__dirname,'..','public','overlays',file))});
-(async()=>{try{await db.checkDatabase();await migrate();state.db=true}catch(e){console.warn('Baza MySQL nu este conectata:',e.message)}const port=Number(process.env.PORT||3000);server.listen(port,()=>console.log(`TikLiveTools: http://localhost:${port}`))})();
+(async()=>{try{await db.checkDatabase();await migrate();state.db=true}catch(e){console.warn('Baza MySQL nu este conectata:',e.message)}const port=Number(process.env.PORT||3000);server.listen(port,()=>{hotkeys.start();console.log(`TikLiveTools: http://localhost:${port}`)})})();

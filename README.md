@@ -41,5 +41,6 @@ Integrarea TikTok folosește un conector open-source neoficial. TikTok poate sch
 - Comenzi de chat locale cu răspuns TTS, sound alerts cu upload audio local și WebSocket.
 - Galerie de overlay-uri cu previzualizare animată, linkuri reutilizabile și Gift Browser cu 966 modele; valorile în coins se sincronizează din catalogul TikTok când contul este conectat.
 - OBS WebSocket, profiluri, settings, import/export și coadă locală pentru song requests.
+- Bridge de hotkeys Windows: `Ctrl+Alt+F1` Timer, `Ctrl+Alt+F2` Wheel Spin, `Ctrl+Alt+F3` Next Song, `Ctrl+Alt+F4` Next OBS Scene. Acestea declanșează acțiuni locale chiar când OBS/LIVE Studio este activ; aceleași combinații pot fi configurate în LIVE Studio pentru acțiuni proprii.
 
 Pentru verificare rapidă fără live real, folosește butoanele `Test gift`, `Test like`, `Test follow` din galerie. Acestea trec prin același pipeline de DB, goals, rules, sunete și WebSocket ca evenimentele primite de la TikTok.
