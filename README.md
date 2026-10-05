@@ -34,6 +34,12 @@ Arhiva personală de 966 modele de cadouri este disponibilă în `public/assets/
 
 Integrarea TikTok folosește un conector open-source neoficial. TikTok poate schimba protocolul de live fără notificare, de aceea conectorul este izolat în `src/tiktok.js`.
 
-## Stare
+## Funcții implementate local
 
-Fundația funcțională este instalată: server local, WebSocket, conectare la evenimente TikTok, MySQL/MariaDB, stocarea evenimentelor și endpoint-uri de overlay. Editorul complet de reguli, clasamentele calculate și integrarea OBS vor fi adăugate în următoarele etape.
+- Pipeline de evenimente TikTok și evenimente de test: stocare în MariaDB, viewer points/levels, clasamente, goals și sesiuni de joc.
+- Reguli Actions & Events cu filtre, cooldown, TTS, sunet, schimbare de scenă OBS și webhook.
+- Comenzi de chat locale cu răspuns TTS, sound alerts cu upload audio local și WebSocket.
+- Galerie de overlay-uri cu previzualizare animată, linkuri reutilizabile și Gift Browser cu 966 modele; valorile în coins se sincronizează din catalogul TikTok când contul este conectat.
+- OBS WebSocket, profiluri, settings, import/export și coadă locală pentru song requests.
+
+Pentru verificare rapidă fără live real, folosește butoanele `Test gift`, `Test like`, `Test follow` din galerie. Acestea trec prin același pipeline de DB, goals, rules, sunete și WebSocket ca evenimentele primite de la TikTok.
