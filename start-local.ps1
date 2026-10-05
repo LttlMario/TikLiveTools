@@ -14,5 +14,12 @@ Set-Location $project
 if (-not (Test-Path (Join-Path $project 'node_modules'))) {
   npm install
 }
+if (Get-Command py -ErrorAction SilentlyContinue) {
+  $ttsReady = py -c "import edge_tts" 2>$null
+  if ($LASTEXITCODE -ne 0) { py -m pip install -r (Join-Path $project 'requirements-tts.txt') }
+  $ttsScript = Join-Path $project 'tts-service.py'
+  $ttsPort = Test-NetConnection -ComputerName 127.0.0.1 -Port 8770 -InformationLevel Quiet -WarningAction SilentlyContinue
+  if (-not $ttsPort) { Start-Process py -ArgumentList "-3 `"$ttsScript`"" -WorkingDirectory $project -WindowStyle Hidden }
+}
 Start-Process 'http://localhost:3000'
 npm start
