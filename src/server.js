@@ -12,6 +12,7 @@ const ObsService=require('./obs');
 const HotkeyService=require('./hotkeys');
 const {ActionEngine}=require('./actions');
 const DiscordNotifier=require('./discord');
+const SpotifyService=require('./spotify');
 
 const app=express();
 const soundDir=path.join(__dirname,'..','public','uploads','sounds');fs.mkdirSync(soundDir,{recursive:true});
@@ -26,6 +27,7 @@ app.use(express.static(path.join(__dirname,'..','public')));
 function broadcast(message){const data=JSON.stringify(message);for(const c of clients)if(c.readyState===WebSocket.OPEN)c.send(data)}
 const obs=new ObsService(broadcast);
 const discord=new DiscordNotifier(()=>db.getSettings());
+const spotify=new SpotifyService(db);
 const actions=new ActionEngine({getRules:()=>db.getRules(),broadcast,obs});
 const commandCooldowns=new Map();
 const viewerRoles=new Map();
@@ -70,6 +72,11 @@ app.post('/api/songs',async(q,r)=>{try{r.json({ok:true,id:await db.addSong(q.bod
 app.post('/api/songs/request',async(q,r)=>{try{r.json({ok:true,id:await db.requestSong(q.body)})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.patch('/api/songs/:id',async(q,r)=>{try{await db.updateSong(q.params.id,q.body.status);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.post('/api/songs/next',async(_q,r)=>{try{r.json({ok:true,id:await db.advanceSong()})}catch(e){r.status(400).json({ok:false,error:e.message})}});
+app.get('/api/spotify/status',async(_q,r)=>{try{r.json(await spotify.status())}catch(e){r.status(500).json({error:e.message})}});
+app.get('/api/spotify/login',async(_q,r)=>{try{r.redirect(await spotify.authorizationUrl())}catch(e){r.status(400).json({error:e.message})}});
+app.get('/api/spotify/callback',async(q,r)=>{try{await spotify.callback(String(q.query.code||''),String(q.query.state||''));r.redirect('/#song')}catch(e){r.status(400).send(`<h2>Spotify connection failed</h2><p>${String(e.message).replace(/[<>&]/g,'')}</p><a href="/#song">Înapoi</a>`)}});
+app.get('/api/spotify/search',async(q,r)=>{try{r.json(await spotify.search(String(q.query.q||'')))}catch(e){r.status(400).json({error:e.message})}});
+app.post('/api/spotify/queue',async(q,r)=>{try{r.json(await spotify.queue(q.body.uri))}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/api/sounds',async(_q,r)=>{try{r.json(await db.listSoundAlerts())}catch(e){r.status(500).json({error:e.message})}});
 app.post('/api/uploads/sound',upload.single('file'),(q,r)=>{if(!q.file)return r.status(400).json({error:'Selectează un fișier audio valid.'});r.json({ok:true,url:`/uploads/sounds/${q.file.filename}`,name:q.file.originalname})});
 app.post('/api/sounds',async(q,r)=>{try{r.json({ok:true,id:await db.saveSoundAlert(q.body)})}catch(e){r.status(400).json({ok:false,error:e.message})}});
