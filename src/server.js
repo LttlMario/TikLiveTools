@@ -16,11 +16,14 @@ const SpotifyService=require('./spotify');
 
 const app=express();
 const soundDir=path.join(__dirname,'..','public','uploads','sounds');fs.mkdirSync(soundDir,{recursive:true});
+const dataDir=path.join(__dirname,'..','data');fs.mkdirSync(dataDir,{recursive:true});
+const giftCacheFile=path.join(dataDir,'gifts-catalog.json');
+let cachedGifts=[];try{cachedGifts=JSON.parse(fs.readFileSync(giftCacheFile,'utf8'))}catch{}
 const upload=multer({storage:multer.diskStorage({destination:soundDir,filename:(_req,file,cb)=>{const safe=path.basename(file.originalname).replace(/[^a-zA-Z0-9._-]/g,'_');cb(null,`${Date.now()}-${safe}`)}}),limits:{fileSize:15*1024*1024},fileFilter:(_req,file,cb)=>cb(null,/^audio\//i.test(file.mimetype))});
 const server=http.createServer(app);
 const wss=new WebSocket.Server({server,path:'/ws'});
 const clients=new Set();
-const state={connected:false,obsConnected:false,username:process.env.TIKTOK_USERNAME||'',lastEvent:null,db:false,gifts:[],roomStats:{viewerCount:0,topGifters:[]}};
+const state={connected:false,obsConnected:false,username:process.env.TIKTOK_USERNAME||'',lastEvent:null,db:false,gifts:cachedGifts,roomStats:{viewerCount:0,topGifters:[]}};
 app.use(express.json({limit:'2mb'}));
 app.use((req,res,next)=>{res.set('Cache-Control','no-store');next()});
 app.use(express.static(path.join(__dirname,'..','public')));
@@ -38,7 +41,7 @@ for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>{hotkeys.stop();s
 function roleAllowed(required,event){const role=String(required||'everyone').toLowerCase();if(role==='everyone')return true;const known=viewerRoles.get(event.uniqueId)||{};if(role==='moderator')return Boolean(event.isModerator||known.moderator);if(role==='subscriber')return Boolean(event.isSubscriber||known.subscriber||known.moderator);if(role==='follower')return Boolean(event.isFollower||known.follower||known.subscriber||known.moderator);return true}
 async function processAuxiliary(event){const [commands,sounds]=await Promise.all([db.listCommands(),db.listSoundAlerts()]);if(event.type==='chat'){const text=String(event.comment||'').trim();const command=text.split(/\s+/)[0].toLowerCase();const match=commands.find(c=>c.enabled&&String(c.command_name).toLowerCase()===command);if(match&&roleAllowed(match.required_role,event)){const key=`${match.id}:${event.uniqueId||'global'}`,now=Date.now(),until=commandCooldowns.get(key)||0;if(until<=now){commandCooldowns.set(key,now+Number(match.cooldown_seconds||0)*1000);const response=String(match.response_text||'').replace(/\{username\}/g,event.displayName||event.uniqueId||'viewer').replace(/\{comment\}/g,event.comment||'');broadcast({type:'chat_response',command:match.command_name,response,event});if(response){broadcast({type:'tts',text:response});if(state.connected)await tiktok.sendMessage(response).catch(error=>broadcast({type:'chat_send_error',message:error.message}))}await actions.run(match.actions,event)}}}for(const sound of sounds){const c=sound.triggerConfig||{};if(!sound.enabled||sound.trigger_type!==event.type)continue;if(c.giftName&&String(c.giftName).toLowerCase()!==String(event.giftName||'').toLowerCase())continue;if(c.minCoins&&Number(event.coins||0)<Number(c.minCoins))continue;broadcast({type:'sound',sound:{id:sound.id,name:sound.name,url:sound.file_path,volume:Number(sound.volume||1)},event})}}
 async function processEvent(event){state.lastEvent=event;if(event.uniqueId){const r=viewerRoles.get(event.uniqueId)||{};if(event.type==='follow')r.follower=true;if(event.type==='subscribe')r.subscriber=true;if(event.isModerator)r.moderator=true;if(event.isSubscriber)r.subscriber=true;viewerRoles.set(event.uniqueId,r)}try{if(state.db){await db.saveEvent(event);await db.upsertViewer(event);await db.applyEventToGoals(event);await db.applyEventToGames(event);await actions.process(event);await processAuxiliary(event);await discord.event(event)}}catch(error){broadcast({type:'database_error',message:error.message})}broadcast({type:'event',event})}
-const tiktok=new TikTokService(processEvent,status=>{Object.assign(state,status);broadcast({type:'status',status})},gifts=>{state.gifts=gifts||[];broadcast({type:'gifts',gifts:state.gifts})});
+const tiktok=new TikTokService(processEvent,status=>{Object.assign(state,status);broadcast({type:'status',status})},gifts=>{if(Array.isArray(gifts)&&gifts.length){state.gifts=gifts;try{fs.writeFileSync(giftCacheFile,JSON.stringify(gifts))}catch{}}else if(!state.connected)state.gifts=cachedGifts;broadcast({type:'gifts',gifts:state.gifts})});
 wss.on('connection',client=>{clients.add(client);client.send(JSON.stringify({type:'state',state}));client.on('close',()=>clients.delete(client))});
 app.get('/api/status',(_q,r)=>r.json(state));
 app.get('/api/hotkeys',(_q,r)=>r.json({enabled:Boolean(hotkeys.proc),bindings:{1:'Ctrl+Alt+F1 • Timer',2:'Ctrl+Alt+F2 • Wheel Spin',3:'Ctrl+Alt+F3 • Next Song',4:'Ctrl+Alt+F4 • Next OBS Scene'}}));
