@@ -1,0 +1,3 @@
+const OBSWebSocket=require('obs-websocket-js').default;
+class ObsService{constructor(broadcast){this.obs=new OBSWebSocket();this.broadcast=broadcast;this.connected=false}async connect(url='ws://127.0.0.1:4455',password=''){await this.obs.connect(url,password);this.connected=true;this.broadcast({type:'obs_status',connected:true})}async disconnect(){if(this.connected)await this.obs.disconnect();this.connected=false;this.broadcast({type:'obs_status',connected:false})}async setScene(sceneName){if(!this.connected||!sceneName)return;await this.obs.call('SetCurrentProgramScene',{sceneName:sceneName})}async getScenes(){if(!this.connected)return [];const x=await this.obs.call('GetSceneList');return x.scenes||[]}}
+module.exports=ObsService;
