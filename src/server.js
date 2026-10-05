@@ -99,6 +99,7 @@ app.post('/api/spotify/queue',async(q,r)=>{try{r.json(await spotify.queue(q.body
 app.get('/api/sounds',async(_q,r)=>{try{r.json(await db.listSoundAlerts())}catch(e){r.status(500).json({error:e.message})}});
 app.post('/api/uploads/sound',upload.single('file'),(q,r)=>{if(!q.file)return r.status(400).json({error:'Selectează un fișier audio valid.'});r.json({ok:true,url:`/uploads/sounds/${q.file.filename}`,name:q.file.originalname})});
 app.post('/api/sounds',async(q,r)=>{try{r.json({ok:true,id:await db.saveSoundAlert(q.body)})}catch(e){r.status(400).json({ok:false,error:e.message})}});
+app.post('/api/sounds/:id/test',async(q,r)=>{try{const sound=(await db.listSoundAlerts()).find(x=>Number(x.id)===Number(q.params.id));if(!sound)throw new Error('Alerta audio nu există.');if(!sound.enabled)throw new Error('Alerta audio este dezactivată.');broadcast({type:'sound',sound:{id:sound.id,name:sound.name,url:sound.file_path,volume:Number(sound.volume||1)},event:{type:sound.trigger_type,previewOnly:true,displayName:'Preview Sound'}});r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.delete('/api/sounds/:id',async(q,r)=>{try{await db.deleteSoundAlert(q.params.id);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/api/overlays',async(_q,r)=>{try{r.json(await db.listOverlays())}catch(e){r.status(500).json({error:e.message})}});
 app.post('/api/overlays',async(q,r)=>{try{await db.saveOverlay(q.body);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
