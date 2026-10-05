@@ -44,7 +44,7 @@ app.get('/api/status',(_q,r)=>r.json(state));
 app.get('/api/hotkeys',(_q,r)=>r.json({enabled:Boolean(hotkeys.proc),bindings:{1:'Ctrl+Alt+F1 • Timer',2:'Ctrl+Alt+F2 • Wheel Spin',3:'Ctrl+Alt+F3 • Next Song',4:'Ctrl+Alt+F4 • Next OBS Scene'}}));
 app.post('/api/hotkeys/trigger',async(q,r)=>{try{await runHotkey(String(q.body.action||''));r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/api/gifts',(_q,r)=>r.json(state.gifts||[]));
-app.post('/api/connect',async(q,r)=>{const requested=String(q.body.username||'').trim();try{state.username=requested;const settings=await db.getSettings();const sessionId=String(q.body.sessionId||settings.tiktokSessionId||process.env.TIKTOK_SESSION_ID||'').trim();await tiktok.connect(state.username,sessionId);await db.resetStreamGoals();r.json({ok:true,state})}catch(e){state.connected=false;state.username='';r.status(400).json({ok:false,error:e.message})}});
+app.post('/api/connect',async(q,r)=>{const requested=String(q.body.username||'').trim();try{const active=await db.getActiveProfile();state.username=requested||active?.tiktok_username||'';const settings=await db.getSettings();const sessionId=String(q.body.sessionId||active?.session_id||settings.tiktokSessionId||process.env.TIKTOK_SESSION_ID||'').trim();await tiktok.connect(state.username,sessionId);await db.resetStreamGoals();r.json({ok:true,state})}catch(e){state.connected=false;state.username='';r.status(400).json({ok:false,error:e.message})}});
 app.post('/api/disconnect',async(_q,r)=>{await tiktok.disconnect();state.connected=false;state.username='';state.roomStats={viewerCount:0,topGifters:[]};viewerRoles.clear();commandCooldowns.clear();broadcast({type:'status',status:state});r.json({ok:true})});
 app.post('/api/obs/connect',async(q,r)=>{try{await obs.connect(q.body.url||'ws://127.0.0.1:4455',q.body.password||'');state.obsConnected=true;r.json({ok:true,scenes:await obs.getScenes()})}catch(e){state.obsConnected=false;r.status(400).json({ok:false,error:e.message})}});
 app.post('/api/obs/disconnect',async(_q,r)=>{await obs.disconnect();state.obsConnected=false;r.json({ok:true})});
@@ -57,7 +57,7 @@ app.delete('/api/rules/:id',async(q,r)=>{try{await db.deleteRule(q.params.id);r.
 app.get('/api/viewers/stats',async(_q,r)=>{try{r.json(await db.getViewerStats())}catch(e){r.status(500).json({error:e.message})}});
 app.get('/api/overlay/:name/data',async(q,r)=>{try{r.json(await db.getOverlayData(q.params.name))}catch(e){r.status(500).json({error:e.message})}});
 app.get('/api/profiles',async(_q,r)=>{try{r.json(await db.getProfiles())}catch(e){r.status(500).json({error:e.message})}});
-app.post('/api/profiles',async(q,r)=>{try{r.json({ok:true,id:await db.createProfile(q.body.name,q.body.username,q.body.plan||'premium')})}catch(e){r.status(400).json({ok:false,error:e.message})}});
+app.post('/api/profiles',async(q,r)=>{try{r.json({ok:true,id:await db.createProfile(q.body.name,q.body.username,q.body.plan||'premium',q.body.sessionId||'')})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.post('/api/profiles/:id/activate',async(q,r)=>{try{await db.activateProfile(q.params.id);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/api/settings',async(_q,r)=>{try{r.json(await db.getSettings())}catch(e){r.status(500).json({error:e.message})}});
 app.post('/api/settings',async(q,r)=>{try{for(const [key,value] of Object.entries(q.body))await db.saveSetting(key,value);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});

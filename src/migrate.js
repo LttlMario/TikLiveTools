@@ -14,6 +14,7 @@ async function migrate(){
     "CREATE TABLE IF NOT EXISTS overlay_configs (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, slug VARCHAR(100) NOT NULL UNIQUE, title VARCHAR(160) NOT NULL, config JSON NOT NULL, enabled TINYINT(1) NOT NULL DEFAULT 1, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)",
   ];
   for(const sql of statements)await db.pool.query(sql);
+  try{await db.pool.query("ALTER TABLE profiles ADD COLUMN session_id TEXT NULL")}catch(e){if(!/duplicate|exists/i.test(String(e.message)))throw e}
   await db.pool.query("INSERT INTO profiles (name, tiktok_username, is_active) VALUES ('Profil principal', NULL, 1) ON DUPLICATE KEY UPDATE name=VALUES(name)");
 }
 module.exports=migrate;
