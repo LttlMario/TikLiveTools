@@ -25,7 +25,7 @@ http://localhost:3000/overlay/top-coins
 http://localhost:3000/overlay/coin-jar
 ```
 
-Profilul personal este configurat cu planul local `premium`, astfel încât funcțiile avansate să nu fie blocate de limite comerciale. Integrarea Discord rămâne opțională: aplicația poate trimite notificări și poate folosi roluri, dar nu este necesară pentru rularea locală.
+Profilul personal este configurat cu planul local `premium`, astfel încât funcțiile avansate să nu fie blocate de limite comerciale. Fiecare profil poate păstra username-ul și `sessionid`-ul local al contului său. Integrarea Discord rămâne opțională: aplicația poate trimite notificări și poate folosi roluri, dar nu este necesară pentru rularea locală.
 
 ## Overlay-uri
 
