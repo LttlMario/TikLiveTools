@@ -5,16 +5,15 @@ Aplicație locală pentru automatizări TikTok LIVE, compatibilă cu TikTok LIVE
 ## Pornire locală
 
 1. Pornește Apache și MySQL din XAMPP. În instalarea actuală, XAMPP este la `D:\xamppp` și MariaDB folosește portul `3306`.
-2. Deschide phpMyAdmin și importă `sql/schema.sql`.
-3. Copiază `.env.example` în `.env` și verifică datele MySQL.
-4. Rulează:
+2. Copiază `.env.example` în `.env` și verifică datele MySQL.
+3. Rulează:
 
 ```powershell
 npm install
 npm start
 ```
 
-5. Deschide `http://localhost:3000`.
+4. Deschide `http://localhost:3000`. La prima pornire aplicația creează automat baza `tik_live_tools` și tabelele lipsă; importul manual în phpMyAdmin nu mai este necesar.
 
 Overlay-urile sunt disponibile la adrese de tipul:
 
