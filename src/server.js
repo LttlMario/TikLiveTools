@@ -26,6 +26,8 @@ const clients=new Set();
 const state={connected:false,obsConnected:false,username:process.env.TIKTOK_USERNAME||'',lastEvent:null,db:false,gifts:cachedGifts,roomStats:{viewerCount:0,topGifters:[]}};
 app.use(express.json({limit:'2mb'}));
 app.use((req,res,next)=>{res.set('Cache-Control','no-store');next()});
+const publicOrigin=String(process.env.PUBLIC_ORIGIN||'https://live.panel-pro.ro').replace(/\/$/,'');
+app.use((req,res,next)=>{if(req.headers.origin===publicOrigin){res.set('Access-Control-Allow-Origin',publicOrigin);res.set('Access-Control-Allow-Methods','GET,POST,PUT,PATCH,DELETE,OPTIONS');res.set('Access-Control-Allow-Headers','Content-Type');}if(req.method==='OPTIONS')return res.sendStatus(204);next()});
 app.use(express.static(path.join(__dirname,'..','public')));
 function broadcast(message){const data=JSON.stringify(message);for(const c of clients)if(c.readyState===WebSocket.OPEN)c.send(data)}
 const obs=new ObsService(broadcast);
