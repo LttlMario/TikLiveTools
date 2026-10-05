@@ -26,6 +26,12 @@ http://localhost:3000/overlay/coin-jar
 
 Profilul personal este configurat cu planul local `premium`, astfel încât funcțiile avansate să nu fie blocate de limite comerciale. Integrarea Discord rămâne opțională: aplicația poate trimite notificări și poate folosi roluri, dar nu este necesară pentru rularea locală.
 
+## Overlay-uri
+
+Galeria locală include categorii pentru goals, countdowns, follower/gift counts, Last X, graphics, OBS docks, Gift Browser, Top Likes, Top Coins, Coin Jar, Gift Battle, Wheel, Likeathon și alte widgeturi. Preview-urile folosesc animații CSS și WebSocket pentru a reacționa la evenimente; linkurile `/overlay/<slug>` pot fi introduse ca Link Source în TikTok LIVE Studio sau Browser Source în OBS.
+
+Arhiva personală de 966 modele de cadouri este disponibilă în `public/assets/gifts`, iar pagina Gift Browser oferă căutare și previzualizare.
+
 Integrarea TikTok folosește un conector open-source neoficial. TikTok poate schimba protocolul de live fără notificare, de aceea conectorul este izolat în `src/tiktok.js`.
 
 ## Stare
