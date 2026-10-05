@@ -69,7 +69,7 @@ Pentru ca un overlay public să primească evenimente live, adaugă URL-ul HTTPS
 https://<cont>.github.io/<repository>/overlay/firework/?backend=https://<backend-public>/
 ```
 
-Parametrul `backend` este opțional pentru rularea locală. Nu pune niciodată `sessionid`, parole OBS, fișiere `.env` sau datele MariaDB în repository; acestea rămân în configurația locală.
+Parametrul `backend` este opțional pentru rularea locală. Nu pune niciodată `sessionid`, parole OBS, fișiere `.env` sau datele MariaDB în repository; acestea rămân în configurația locală. Exportul din Setup omite automat `sessionid`, tokenurile Spotify și webhook-ul Discord; după import, completează din nou aceste secrete doar în configurația locală.
 
 Interfața completă este publicată la:
 

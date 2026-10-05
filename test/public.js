@@ -8,6 +8,7 @@ assert.ok(fs.existsSync(path.join(out,'app.js')),'public build must contain the 
 assert.ok(fs.existsSync(path.join(out,'app.css')),'public build must contain the application stylesheet');
 assert.ok(fs.existsSync(path.join(out,'tts-edge.js')),'public build must contain the Neural TTS enhancement');
 const publicApp=fs.readFileSync(path.join(out,'app.js'),'utf8');
+const publicUi=fs.readFileSync(path.join(out,'ui-enhancements.js'),'utf8');
 const publicOverlayScript=fs.readFileSync(path.join(out,'overlays','advanced.js'),'utf8');
 assert.match(publicApp,/tiklivetools_public_backend/,'public app must reuse the Actions backend setting for overlay links');
 assert.match(publicApp,/Testează \$\{label\}/,'gallery buttons must be named for the selected overlay');
@@ -20,6 +21,7 @@ assert.doesNotMatch(publicOverlayScript,/name==='top-likes'\|\|name==='leaderboa
 assert.match(publicOverlayScript,/m\.type==='tts'&&name==='action-screen'/,'TTS must be restricted to the Actions overlay');
 assert.match(publicOverlayScript,/m\.type==='tts'&&name==='action-screen'&&\(!screenId\|\|!target\|\|screenId===target\)/,'Actions TTS must respect its target screen');
 assert.doesNotMatch(publicOverlayScript,/m\.type==='tts'\)speakOverlayTts/,'ordinary overlays must not replay global TTS messages');
+assert.match(publicUi,/secretsOmitted:true/,'configuration exports must explicitly omit local secrets');
 assert.ok(fs.existsSync(path.join(out,'assets','gifts','manifest.json')),'public build must contain gift assets');
 assert.equal(fs.readFileSync(path.join(out,'CNAME'),'utf8').trim(),'live.panel-pro.ro','public build must target the configured domain');
 for(const slug of ['firework','gift-cannon','gift-battle','gift-browser','coin-jar','top-likes','timer','wheel','song-requests','challenge','halving']){
