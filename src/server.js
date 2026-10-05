@@ -33,7 +33,8 @@ function broadcast(message){const data=JSON.stringify(message);for(const c of cl
 const obs=new ObsService(broadcast);
 const discord=new DiscordNotifier(()=>db.getSettings());
 const spotify=new SpotifyService(db);
-const actions=new ActionEngine({getRules:()=>db.getRules(),broadcast,obs});
+async function getTtsSettings(){try{const settings=await db.getSettings();return JSON.parse(settings.ttsSettings||'{}')}catch{return {}}}
+const actions=new ActionEngine({getRules:()=>db.getRules(),broadcast,obs,getTtsSettings});
 const commandCooldowns=new Map();
 const viewerRoles=new Map();
 let hotkeySceneIndex=0;
