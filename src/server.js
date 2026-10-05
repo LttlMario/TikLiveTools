@@ -58,6 +58,7 @@ app.get('/api/viewers/stats',async(_q,r)=>{try{r.json(await db.getViewerStats())
 app.get('/api/overlay/:name/data',async(q,r)=>{try{r.json(await db.getOverlayData(q.params.name))}catch(e){r.status(500).json({error:e.message})}});
 app.get('/api/profiles',async(_q,r)=>{try{r.json(await db.getProfiles())}catch(e){r.status(500).json({error:e.message})}});
 app.post('/api/profiles',async(q,r)=>{try{r.json({ok:true,id:await db.createProfile(q.body.name,q.body.username,q.body.plan||'premium')})}catch(e){r.status(400).json({ok:false,error:e.message})}});
+app.post('/api/profiles/:id/activate',async(q,r)=>{try{await db.activateProfile(q.params.id);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/api/settings',async(_q,r)=>{try{r.json(await db.getSettings())}catch(e){r.status(500).json({error:e.message})}});
 app.post('/api/settings',async(q,r)=>{try{for(const [key,value] of Object.entries(q.body))await db.saveSetting(key,value);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/api/goals',async(_q,r)=>{try{r.json(await db.listGoals())}catch(e){r.status(500).json({error:e.message})}});
