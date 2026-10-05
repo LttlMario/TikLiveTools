@@ -9,7 +9,7 @@ assert.ok(fs.existsSync(path.join(out,'app.css')),'public build must contain the
 assert.ok(fs.existsSync(path.join(out,'tts-edge.js')),'public build must contain the Neural TTS enhancement');
 assert.ok(fs.existsSync(path.join(out,'assets','gifts','manifest.json')),'public build must contain gift assets');
 assert.equal(fs.readFileSync(path.join(out,'CNAME'),'utf8').trim(),'live.panel-pro.ro','public build must target the configured domain');
-for(const slug of ['firework','gift-cannon','coin-jar','top-likes','timer','wheel','song-requests','challenge','halving']){
+for(const slug of ['firework','gift-cannon','gift-battle','gift-browser','coin-jar','top-likes','timer','wheel','song-requests','challenge','halving']){
   const file=path.join(out,'overlay',slug,'index.html');
   assert.ok(fs.existsSync(file),`public overlay route missing: ${slug}`);
   assert.match(fs.readFileSync(file,'utf8'),/advanced\.js/);

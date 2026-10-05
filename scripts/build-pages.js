@@ -7,7 +7,7 @@ const overlayDir=path.join(out,'overlays');
 const routeDir=path.join(out,'overlay');
 const assetsDir=path.join(out,'assets');
 const slugs=[
-  'firework','gift-cannon','top-likes','top-coins','coin-jar','alerts','goals','leaderboard',
+  'firework','gift-cannon','gift-battle','gift-browser','top-likes','top-coins','coin-jar','alerts','goals','leaderboard',
   'win-goal','countdown-goal','follower-count','gift-count','last-follower','last-liker','last-gifter',
   'gift-feed','like-fountain','likeathon','penalty-battle','coin-match','points-animation','user-info',
   'command-info','action-screen','interaction-slider','drop','song-requests','viewer-count','stream-buddies',
