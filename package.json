@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "test": "node scripts/build-pages.js && node test/public.js && node test/unit.js && node test/actions.js && node test/smoke.js && node test/ws.js && node test/obs.js && node test/tts.js && node test/cleanup.js",
+    "test": "node scripts/build-pages.js && node test/public.js && node test/unit.js && node test/actions.js && node test/smoke.js && node test/ws.js && node test/obs.js && node test/tts.js && node test/tiktok.js && node test/cleanup.js",
     "build:pages": "node scripts/build-pages.js"
   },
   "keywords": [],
