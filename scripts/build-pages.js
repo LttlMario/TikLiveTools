@@ -18,7 +18,7 @@ fs.rmSync(out,{recursive:true,force:true});
 fs.mkdirSync(overlayDir,{recursive:true});
 fs.mkdirSync(routeDir,{recursive:true});
 fs.mkdirSync(assetsDir,{recursive:true});
-for(const file of ['index.html','app.css','app.js','ui-enhancements.js'])fs.copyFileSync(path.join(root,'public',file),path.join(out,file));
+for(const file of ['index.html','app.css','app.js','ui-enhancements.js','tts-edge.js'])fs.copyFileSync(path.join(root,'public',file),path.join(out,file));
 fs.cpSync(path.join(root,'public','assets'),assetsDir,{recursive:true});
 for(const file of ['advanced.js','advanced.css'])fs.copyFileSync(path.join(root,'public','overlays',file),path.join(overlayDir,file));
 const html='<!doctype html><html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TikLiveTools Overlay</title><link rel="stylesheet" href="../../overlays/advanced.css"></head><body><main id="app"></main><script src="../../overlays/advanced.js"></script></body></html>';
