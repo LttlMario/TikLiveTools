@@ -13,6 +13,8 @@ npm install
 npm start
 ```
 
+Pe Windows poți folosi și `start-local.ps1`; pornește MariaDB din XAMPP dacă este oprită, pornește TTS-ul Neural local, așteaptă serverul pe portul 3000 și apoi deschide automat interfața.
+
 4. Deschide `http://localhost:3000`. La prima pornire aplicația creează automat baza `tik_live_tools` și tabelele lipsă; importul manual în phpMyAdmin nu mai este necesar.
 
 Pentru conectarea TikTok locală: introdu username-ul contului live în Setup. Dacă TikTok permite WebSocket public, aplicația poate primi evenimente fără cookie; pentru chatbot și trimiterea mesajelor este necesar cookie-ul `sessionid` al contului tău, copiat din browser și introdus în Setup. Valoarea rămâne doar în baza locală MariaDB și nu este trimisă către un signer terț; nu o publica în GitHub sau în capturi de ecran.

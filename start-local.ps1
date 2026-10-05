@@ -21,5 +21,18 @@ if (Get-Command py -ErrorAction SilentlyContinue) {
   $ttsPort = Test-NetConnection -ComputerName 127.0.0.1 -Port 8770 -InformationLevel Quiet -WarningAction SilentlyContinue
   if (-not $ttsPort) { Start-Process py -ArgumentList "-3 `"$ttsScript`"" -WorkingDirectory $project -WindowStyle Hidden }
 }
-Start-Process 'http://localhost:3000'
-npm start
+$appPort = 3000
+$appReady = Test-NetConnection -ComputerName 127.0.0.1 -Port $appPort -InformationLevel Quiet -WarningAction SilentlyContinue
+if (-not $appReady) {
+  Start-Process -FilePath 'npm.cmd' -ArgumentList 'start' -WorkingDirectory $project
+  for ($i = 0; $i -lt 30; $i++) {
+    Start-Sleep -Seconds 1
+    $appReady = Test-NetConnection -ComputerName 127.0.0.1 -Port $appPort -InformationLevel Quiet -WarningAction SilentlyContinue
+    if ($appReady) { break }
+  }
+}
+if ($appReady) {
+  Start-Process 'http://localhost:3000'
+} else {
+  Write-Error 'TikLiveTools nu a pornit pe portul 3000. Verifică fereastra Node/npm pentru eroare.'
+}
