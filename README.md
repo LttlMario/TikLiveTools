@@ -46,6 +46,7 @@ Integrarea TikTok folosește un conector open-source local, fără cont Euler St
 - Webhook Discord opțional și points configurabile pentru follow/join, salvate în MariaDB.
 - Points pot fi configurate pentru coin, like, follow, share, chat, join și minute de chat; utilizatorii activi primesc automat punctele pe minut, iar level-ul este recalculat.
 - Sound Alerts acceptă fișiere audio locale încărcate din interfață și le redă în browser/overlay la evenimentul configurat. Song Requests includ integrare Spotify OAuth opțională: setează `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET` și `SPOTIFY_REDIRECT_URI` în `.env`, apoi adaugă exact redirect-ul în Spotify Developer Dashboard. Căutarea și adăugarea în playback queue cer cont Spotify Premium și permisiunea `user-modify-playback-state`.
+- TTS folosește vocile instalate în Windows/browser: poți filtra după limbă, selecta vocea, viteza, tonul și volumul, apoi salva alegerea pentru testele locale și mesajele TTS primite prin WebSocket.
 - Bridge de hotkeys Windows: `Ctrl+Alt+F1` Timer, `Ctrl+Alt+F2` Wheel Spin, `Ctrl+Alt+F3` Next Song, `Ctrl+Alt+F4` Next OBS Scene. Acestea declanșează acțiuni locale chiar când OBS/LIVE Studio este activ; aceleași combinații pot fi configurate în LIVE Studio pentru acțiuni proprii.
 - Song requests au endpoint separat de cerere cu `pointsCost`; dacă utilizatorul are points insuficiente, cererea este respinsă atomic.
 
