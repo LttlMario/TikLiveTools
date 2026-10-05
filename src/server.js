@@ -80,6 +80,7 @@ app.post('/api/spotify/queue',async(q,r)=>{try{r.json(await spotify.queue(q.body
 app.get('/api/sounds',async(_q,r)=>{try{r.json(await db.listSoundAlerts())}catch(e){r.status(500).json({error:e.message})}});
 app.post('/api/uploads/sound',upload.single('file'),(q,r)=>{if(!q.file)return r.status(400).json({error:'Selectează un fișier audio valid.'});r.json({ok:true,url:`/uploads/sounds/${q.file.filename}`,name:q.file.originalname})});
 app.post('/api/sounds',async(q,r)=>{try{r.json({ok:true,id:await db.saveSoundAlert(q.body)})}catch(e){r.status(400).json({ok:false,error:e.message})}});
+app.delete('/api/sounds/:id',async(q,r)=>{try{await db.deleteSoundAlert(q.params.id);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/api/overlays',async(_q,r)=>{try{r.json(await db.listOverlays())}catch(e){r.status(500).json({error:e.message})}});
 app.post('/api/overlays',async(q,r)=>{try{await db.saveOverlay(q.body);r.json({ok:true})}catch(e){r.status(400).json({ok:false,error:e.message})}});
 app.get('/api/games/:type',async(q,r)=>{try{r.json(await db.getGame(q.params.type))}catch(e){r.status(500).json({error:e.message})}});
