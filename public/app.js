@@ -77,3 +77,43 @@ window.dispatchEvent(new Event('tiklivetools:app-ready'));
   function add(){const select=document.getElementById('ttsLanguage');if(!select||select.dataset.localesAdded)return;select.dataset.localesAdded='1';const group=document.createElement('optgroup');group.label='Accente / locale';locales.forEach(([value,label])=>{const o=document.createElement('option');o.value=value;o.textContent=label;group.appendChild(o)});select.appendChild(group)}
   add();setInterval(add,500);
 })();
+
+// Actions test buttons are local previews: they execute only the selected rule
+// and never write a synthetic event to MariaDB.
+(function(){
+  function previewPayload(rule){
+    const type=rule.trigger_type;
+    if(type==='gift')return {type:'gift',displayName:'Preview Viewer',uniqueId:'preview_viewer',giftName:'Rose',coins:5,quantity:1};
+    if(type==='like')return {type:'like',displayName:'Preview Liker',uniqueId:'preview_liker',quantity:25};
+    if(type==='follow')return {type:'follow',displayName:'Preview Follower',uniqueId:'preview_follower'};
+    if(type==='share')return {type:'share',displayName:'Preview Sharer',uniqueId:'preview_sharer'};
+    return {type:type||'chat',displayName:'Preview Viewer',uniqueId:'preview_viewer',comment:'!test'};
+  }
+  document.addEventListener('click',async event=>{
+    const button=event.target.closest('[data-test-rule]');
+    if(!button)return;
+    event.preventDefault();event.stopImmediatePropagation();
+    if(button.disabled)return;
+    const original=button.textContent;button.disabled=true;button.textContent='…';
+    try{
+      const rules=await fetch(apiUrl('/api/rules')).then(r=>r.json());
+      const rule=rules.find(item=>String(item.id)===String(button.dataset.testRule));
+      if(!rule)throw new Error('Regula nu mai există.');
+      const payload=previewPayload(rule);payload.previewOnly=true;payload.previewAction=true;payload.previewRuleId=rule.id;
+      const response=await fetch(apiUrl('/api/test-event'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      if(!response.ok)throw new Error('Testul acțiunii a eșuat.');
+      button.textContent='✓';
+    }catch(error){button.textContent='!';console.error(error)}
+    setTimeout(()=>{button.disabled=false;button.textContent=original},900);
+  },true);
+  document.addEventListener('click',async event=>{
+    const button=event.target.closest('[data-sim]');
+    if(!button)return;
+    event.preventDefault();event.stopImmediatePropagation();
+    if(button.disabled)return;
+    const type=button.dataset.sim,original=button.textContent;button.disabled=true;button.textContent='…';
+    const payload={type,displayName:'Preview Viewer',uniqueId:'preview_viewer',giftName:type==='gift'?'Rose':undefined,coins:type==='gift'?5:0,quantity:type==='like'?25:1,comment:'!test',previewOnly:true,previewAction:true};
+    try{const response=await fetch(apiUrl('/api/test-event'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(!response.ok)throw new Error('Testul evenimentului a eșuat.');button.textContent='Trimis ✓'}catch(error){button.textContent='!';console.error(error)}
+    setTimeout(()=>{button.disabled=false;button.textContent=original},900);
+  },true);
+})();

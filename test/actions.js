@@ -38,5 +38,12 @@ const {ActionEngine,matches}=require('../src/actions');
   await cooldownEngine.process({type:'follow',uniqueId:'viewer_1'});
   await cooldownEngine.process({type:'follow',uniqueId:'viewer_1'});
   assert.equal(runs,1,'cooldown must suppress repeated action for the same viewer');
+  let selected=[];
+  const selectedEngine=new ActionEngine({getRules:async()=>[
+    {id:1,enabled:1,trigger_type:'follow',trigger_config:{},actions:[{type:'overlay',url:'first'}]},
+    {id:2,enabled:1,trigger_type:'follow',trigger_config:{},actions:[{type:'overlay',url:'second'}]}
+  ],broadcast:message=>selected.push(message.action.url)});
+  await selectedEngine.process({type:'follow',uniqueId:'preview'},{ruleId:2});
+  assert.deepEqual(selected,['second'],'preview action must execute only the selected rule');
   console.log('TikLiveTools actions tests passed');
 })().catch(error=>{console.error(error);process.exit(1)});
