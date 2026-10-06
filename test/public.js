@@ -27,6 +27,8 @@ assert.match(publicOverlayScript,/m\.type==='tts'&&name==='action-screen'/,'TTS 
 assert.match(publicOverlayScript,/m\.type==='tts'&&name==='action-screen'&&\(!screenId\|\|!target\|\|screenId===target\)/,'Actions TTS must respect its target screen');
 assert.doesNotMatch(publicOverlayScript,/m\.type==='tts'\)speakOverlayTts/,'ordinary overlays must not replay global TTS messages');
 assert.match(publicOverlayScript,/m\.type==='sound'&&name==='action-screen'/,'global sound alerts must be isolated to the Actions overlay');
+assert.doesNotMatch(publicApp,/m\.type==='tts'/,'the control panel must not replay TTS received by overlays');
+assert.doesNotMatch(publicApp,/m\.type==='sound'&&m\.sound/,'the control panel must not replay sound alerts received by overlays');
 assert.match(publicUi,/secretsOmitted:true/,'configuration exports must explicitly omit local secrets');
 assert.match(publicApp,/secretsOmitted:true/,'base configuration export must omit local secrets before UI enhancements load');
 assert.match(publicApp,/spotifyAccessToken/,'base configuration export must filter Spotify secrets');
