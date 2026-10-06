@@ -24,7 +24,8 @@ if (Get-Command py -ErrorAction SilentlyContinue) {
 $appPort = 3000
 $appReady = Test-NetConnection -ComputerName 127.0.0.1 -Port $appPort -InformationLevel Quiet -WarningAction SilentlyContinue
 if (-not $appReady) {
-  Start-Process -FilePath 'npm.cmd' -ArgumentList 'start' -WorkingDirectory $project
+  # Rulează aplicația Node în fundal; nu este necesară o fereastră de consolă.
+  Start-Process -FilePath 'npm.cmd' -ArgumentList 'start' -WorkingDirectory $project -WindowStyle Hidden
   for ($i = 0; $i -lt 30; $i++) {
     Start-Sleep -Seconds 1
     $appReady = Test-NetConnection -ComputerName 127.0.0.1 -Port $appPort -InformationLevel Quiet -WarningAction SilentlyContinue
