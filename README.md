@@ -90,3 +90,17 @@ Backend-ul trebuie să fie disponibil prin HTTPS și WebSocket (`wss://`). Serve
 ### Tunel temporar pentru uz personal
 
 După instalarea `cloudflared`, pornește `start-public-tunnel.ps1` din PowerShell cât timp folosești live-ul. Cloudflare va afișa un URL HTTPS temporar; introdu acel URL în `Setup > Backend public`. Oprirea ferestrei închide imediat accesul public.
+
+## Checklist pentru validarea live
+
+Conectarea live se face numai după ce MariaDB, TTS-ul și aplicația locală afișează `online` în Dashboard.
+
+1. Completează username-ul TikTok în Dashboard și, dacă este necesar pentru chatbot, `sessionid` în Setup. Nu copia cookie-ul în repository sau în linkurile publice.
+2. Apasă `Conectare` și verifică faptul că starea devine `TikTok online` numai după handshake-ul real.
+3. Adaugă în TikTok LIVE Studio linkurile HTTPS generate pentru `Actions Screen` sau adaugă aceleași linkuri ca Browser Source în OBS. Pentru acțiuni, folosește câte un ecran pentru fiecare `screen` configurat.
+4. Verifică pe rând follow, like, share, subscribe și un gift cu puține coins: trebuie să apară evenimentul, points, viewerul, overlay-ul și regula asociată.
+5. Verifică un gift cu prag de coins, cooldown-ul, TTS-ul, sunetul și schimbarea de scenă OBS. Repetarea în cooldown nu trebuie să execute din nou acțiunea.
+6. Verifică chatbotul cu o comandă configurată. Răspunsul TikTok necesită `sessionid`; fără el, aplicația păstrează evenimentul local și raportează eroarea de trimitere.
+7. Oprește conexiunea și confirmă că Dashboard-ul revine la `TikTok offline`, fără să șteargă istoricul local din MariaDB.
+
+Testele automate folosesc numai evenimente locale și nu se substituie acestei validări live finale.
