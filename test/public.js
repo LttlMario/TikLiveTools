@@ -15,6 +15,7 @@ assert.match(publicApp,/tiklivetools_public_backend/,'public app must reuse the 
 assert.match(publicTts,/ttsApi\('\/api\/tts\/voices'\)/,'public TTS catalog must use the configured backend');
 assert.match(publicTts,/ttsApi\('\/api\/tts\/synthesize'\)/,'public TTS synthesis must use the configured backend');
 assert.match(publicApp,/Testează \$\{label\}/,'gallery buttons must be named for the selected overlay');
+assert.match(publicApp,/localUrl=`\$\{base\}\/overlay\/\$\{name\}\?preview=1`/,'local gallery previews must run in silent preview mode');
 assert.match(publicApp,/previewOverlay=overlay/,'gallery tests must target only the selected overlay');
 assert.match(publicApp,/join:new Set\(\['viewer-count'\]\)/,'viewer count must use the real join event');
 assert.match(publicApp,/type==='join'\?\{type:'join'/,'viewer count test must emit a join event');
