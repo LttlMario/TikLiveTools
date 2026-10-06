@@ -57,7 +57,7 @@ Pentru verificare rapidă fără live real, folosește butonul specific de pe fi
 
 ### Actions & Events și testarea locală
 
-Pagina `Actions & Events` este împărțită în `Actions` și `Events`, cu acțiunile standard Follow Alert, Gift Alert, Like Alert și Sub Alert. Butonul de test dintr-un rând trimite un eveniment către `POST /api/test-event` al aplicației locale; evenimentul este procesat de MariaDB, reguli, TTS, sunete, WebSocket și OBS local. Nu este trimis către Tikfinity și nu depinde de un serviciu extern. Linkul `/overlay/action-screen?screen=N` este sursa Browser/Link pentru acel ecran și primește evenimentele prin WebSocket-ul backendului configurat.
+Pagina `Actions & Events` este împărțită în `Actions` și `Events`, cu acțiunile standard Follow Alert, Gift Alert, Like Alert și Sub Alert. Butonul de test dintr-un rând trimite un preview către `POST /api/test-event` al aplicației locale: execută numai regula selectată, TTS-ul, sunetul, WebSocket-ul și OBS-ul local, dar nu salvează evenimentul în MariaDB și nu actualizează puncte, viewerii sau obiectivele. Nu este trimis către Tikfinity și nu depinde de un serviciu extern. Linkul `/overlay/action-screen?screen=N` este sursa Browser/Link pentru acel ecran și primește evenimentele prin WebSocket-ul backendului configurat.
 
 În `Actions & Events` există și generatorul one-click pentru cele 8 ecrane: introdu adresa HTTPS/WSS publică a backendului local, apasă `Salvează adresa`, apoi `Creează și copiază link`. Linkul rezultat poate fi lipit direct în TikTok LIVE Studio ca Link Source sau în OBS ca Browser Source. Adresa publică trebuie să fie un tunel HTTPS/WSS către calculatorul pe care rulează TikLiveTools; pagina GitHub Pages singură nu poate accesa `localhost`.
 
