@@ -23,6 +23,13 @@ async function request(path,body,method='POST'){const r=await fetch(base+path,{m
   await new Promise(resolve=>setTimeout(resolve,180));
   assert.ok(messages.some(x=>x.type==='action'&&x.action?.url==='gift'),'Actions test button must execute the selected rule locally');
   assert.ok(messages.some(x=>x.type==='tts'&&x.text==='Salut Preview Rule'),'Actions preview must execute TTS without persisting the event');
+  const command=await request('/api/chat/commands',{commandName:'!ws-smoke',responseText:'Salut {username}',requiredRole:'everyone',cooldownSeconds:1,actions:[]});
+  messages.length=0;
+  await request('/api/test-event',{type:'chat',uniqueId:'ws_chat_user',displayName:'Chat Viewer',comment:'!ws-smoke buna'});
+  await new Promise(resolve=>setTimeout(resolve,160));
+  assert.ok(messages.some(x=>x.type==='chat_response'&&x.response==='Salut Chat Viewer'),'chat command must respond through WebSocket');
+  assert.ok(messages.some(x=>x.type==='tts'&&x.text==='Salut Chat Viewer'),'chat command response must trigger TTS');
+  await request(`/api/chat/commands/${command.id}`,undefined,'DELETE');
   const sound=await request('/api/sounds',{name:'ws-preview-sound-'+Date.now(),triggerType:'gift',triggerConfig:{giftName:'Rose'},filePath:'/uploads/sounds/ws-preview.mp3',volume:.4});
   messages.length=0;
   await request(`/api/sounds/${sound.id}/test`,{});
