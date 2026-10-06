@@ -3,6 +3,9 @@ const base=process.env.TEST_BASE_URL||'http://localhost:3000';
 
 (async()=>{
   await fetch(base+'/api/disconnect',{method:'POST'}).catch(()=>{});
+  const health=await fetch(base+'/api/health').then(r=>r.json());
+  assert.equal(health.tiktok,false,'cleanup must leave TikTok disconnected');
+  assert.equal(health.lastEventType,null,'cleanup must clear the last live event');
   const ids=['preview_viewer','preview_liker','preview_follower','ws_smoke_user','smoke_points_user','smoke_song_user','smoke_goal_user','smoke_likeathon','smoke_challenge','smoke_coinmatch','smoke_penalty','smoke_halving','smoke_drop_user'];
   const marks=ids.map(()=>'?').join(',');
   await db.pool.execute(`DELETE FROM live_events WHERE unique_id LIKE 'smoke_%' OR unique_id LIKE 'ws_smoke_%' OR unique_id LIKE 'gallery_preview_%' OR unique_id IN (${marks})`,ids);
