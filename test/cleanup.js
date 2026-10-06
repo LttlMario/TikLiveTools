@@ -1,3 +1,4 @@
+const assert=require('node:assert/strict');
 const db=require('../src/db');
 const base=process.env.TEST_BASE_URL||'http://localhost:3000';
 
