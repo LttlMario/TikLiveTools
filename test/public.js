@@ -28,6 +28,8 @@ assert.match(publicOverlayScript,/m\.type==='tts'&&name==='action-screen'&&\(!sc
 assert.doesNotMatch(publicOverlayScript,/m\.type==='tts'\)speakOverlayTts/,'ordinary overlays must not replay global TTS messages');
 assert.match(publicOverlayScript,/m\.type==='sound'&&name==='action-screen'/,'global sound alerts must be isolated to the Actions overlay');
 assert.match(publicUi,/secretsOmitted:true/,'configuration exports must explicitly omit local secrets');
+assert.match(publicApp,/secretsOmitted:true/,'base configuration export must omit local secrets before UI enhancements load');
+assert.match(publicApp,/spotifyAccessToken/,'base configuration export must filter Spotify secrets');
 assert.ok(fs.existsSync(path.join(out,'assets','gifts','manifest.json')),'public build must contain gift assets');
 assert.equal(fs.readFileSync(path.join(out,'CNAME'),'utf8').trim(),'live.panel-pro.ro','public build must target the configured domain');
 for(const slug of ['firework','gift-cannon','gift-battle','gift-browser','coin-jar','top-likes','timer','wheel','song-requests','challenge','halving']){
