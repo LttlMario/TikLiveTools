@@ -24,7 +24,7 @@ assert.match(publicOverlayScript,/firework:\{gift:'firework'\}/,'firework must h
 assert.match(publicOverlayScript,/'like-fountain':\{like:'fountain'\}/,'like fountain must have its own like cue');
 assert.doesNotMatch(publicOverlayScript,/name==='top-likes'\|\|name==='leaderboard'/,'static leaderboard overlays must not replay a sound for every like');
 assert.match(publicOverlayScript,/m\.type==='tts'&&name==='action-screen'/,'TTS must be restricted to the Actions overlay');
-assert.match(publicOverlayScript,/m\.type==='tts'&&name==='action-screen'&&\(!screenId\|\|!target\|\|screenId===target\)/,'Actions TTS must respect its target screen');
+assert.match(publicOverlayScript,/m\.type==='tts'&&name==='action-screen'&&(?:!previewMode&&)?\(!screenId\|\|!target\|\|screenId===target\)/,'Actions TTS must respect its target screen');
 assert.match(publicOverlayScript,/m\.type==='tts'&&name==='action-screen'&&!previewMode/,'gallery preview mode must suppress Actions Screen TTS');
 assert.doesNotMatch(publicOverlayScript,/m\.type==='tts'\)speakOverlayTts/,'ordinary overlays must not replay global TTS messages');
 assert.match(publicOverlayScript,/m\.type==='sound'&&name==='action-screen'/,'global sound alerts must be isolated to the Actions overlay');
