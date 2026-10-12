@@ -17,7 +17,24 @@ const overlayTriggers={
 };
 function overlayTrigger(name){for(const [type,names] of Object.entries(overlayTriggers))if(names.has(name))return type;return 'gift'}
 function overlayTestLabel(label){return `Testează ${label}`}
-function overlayCard(item){const[label,name]=item,trigger=overlayTrigger(name),localUrl=`${base}/overlay/${name}?preview=1`,publicUrl=`https://live.panel-pro.ro/overlay/${name}/`+(backend?`?backend=${encodeURIComponent(backend)}`:''),previewUrl=publicUrl+(publicUrl.includes('?')?'&':'?')+'preview=1';return `<article class="overlay-card"><div class="overlay-head"><strong>${label}</strong><span>${name}</span></div><div class="preview-label">Previzualizare locală animată</div><iframe title="Previzualizare ${label}" src="${localUrl}"></iframe><div class="overlay-actions"><button data-test="${trigger}" data-overlay="${name}" data-test-overlay="${name}">${overlayTestLabel(label)}</button><button class="secondary" data-copy="${publicUrl}">Copiază link public</button><a class="open-preview" href="${previewUrl}" target="_blank">Deschide public</a></div><div class="overlay-trigger">Se activează la: <b>${trigger==='action'?'acțiune configurată':trigger}</b></div><code>${publicUrl}</code></article>`}
+const overlayDescriptions={
+ 'top-likes':'A ranking of the viewers who sent the most Likes (Taps on screen).',
+ 'top-coins':'A ranking of the viewers who spent the most coins in the current stream.',
+ 'top-gifters':'A ranking of the viewers who spent the most coins in the current stream.',
+ 'coin-jar':'Watch the jar fill up with gifts as your viewers interact and help you reach your goal in a fun, visual way.',
+ 'gift-feed':'Lists the last received gifts. Click on "Customize" to adjust the overlay to your needs.',
+ 'firework':'Your viewers can trigger a breathtaking firework by sending gifts. The sound can be deactivated in the customizations!',
+ 'gift-cannon':'The profile pictures of your viewers fly through the picture with the gift when someone sends gifts!',
+ 'like-fountain':'Every time your viewers send likes, hearts rise.',
+ 'snow':'Create a cozy winter vibe with gently falling snow to add a clean, festive touch to your stream.',
+ 'action-screen':'Shows your actions from the Actions & Events feature. Each screen has its own link!',
+ 'interaction-slider':'Shows all your custom interactions configured in Actions & Events and Sound Alerts.',
+ 'song-requests':'Displays the playback queue of the Song Requests feature.',
+ 'chat':'Displays the chat from your TikTok stream.',
+ 'coin-match':'Host live auctions where viewers bid with gifts to reach the top.',
+ 'gift-battle':'Two gifts race each other — viewers pick a side by sending one.'
+};
+function overlayCard(item){const[label,name]=item,trigger=overlayTrigger(name),localUrl=`${base}/overlay/${name}?preview=1`,publicUrl=`https://live.panel-pro.ro/overlay/${name}/`+(backend?`?backend=${encodeURIComponent(backend)}`:''),previewUrl=publicUrl+(publicUrl.includes('?')?'&':'?')+'preview=1',description=overlayDescriptions[name]||`Animated ${label} overlay for TikTok LIVE, OBS and LIVE Studio.`;return `<article class="overlay-card"><div class="overlay-head"><strong>${label}</strong><span class="overlay-pro">PRO</span></div><p class="overlay-description">${description}</p><div class="overlay-actions"><code class="overlay-url">${publicUrl}</code><button class="secondary" data-copy="${publicUrl}">Copiază URL</button><button data-test="${trigger}" data-overlay="${name}" data-test-overlay="${name}">${overlayTestLabel(label)}</button><a class="open-preview" href="${previewUrl}" target="_blank">Deschide public</a></div><div class="preview-label">Previzualizare live</div><iframe title="Previzualizare ${label}" src="${localUrl}"></iframe><div class="overlay-trigger">Se activează la: <b>${trigger==='action'?'acțiune configurată':trigger}</b></div></article>`}
 function actionSummary(action){const type={tts:'TTS',sound:'Sunet',overlay:'Overlay',obs_scene:'OBS',webhook:'Webhook'}[action?.type]||action?.type||'Acțiune';const target=action?.screen?` • Screen ${action.screen}`:'';return type+target}
 function actionLabel(action){return {tts:'TTS',sound:'Sound alert',overlay:'Overlay action',obs_scene:'OBS scene',webhook:'Webhook'}[action?.type]||action?.type||'Action'}
 function actionEventPayload(rule){const t=rule.trigger_type;if(t==='gift')return {type:'gift',displayName:'Preview Viewer',uniqueId:'preview_viewer',giftName:'Rose',coins:5,quantity:1};if(t==='like')return {type:'like',displayName:'Preview Liker',uniqueId:'preview_liker',quantity:25};if(t==='follow')return {type:'follow',displayName:'Preview Follower',uniqueId:'preview_follower'};if(t==='share')return {type:'share',displayName:'Preview Sharer',uniqueId:'preview_sharer'};return {type:t||'chat',displayName:'Preview Viewer',uniqueId:'preview_viewer',comment:'!test'} }
