@@ -25,6 +25,13 @@ assert.match(publicGallery,/theme/,'overlay customizer must expose theme setting
 assert.match(publicGallery,/scale/,'overlay customizer must expose scale settings');
 assert.match(publicGallery,/density/,'overlay customizer must expose density settings');
 assert.match(publicGallery,/sound/,'overlay customizer must expose sound settings');
+assert.match(publicGallery,/motion/,'overlay customizer must expose animation speed settings');
+assert.match(publicGallery,/glow/,'overlay customizer must expose glow settings');
+assert.match(publicGallery,/radius/,'overlay customizer must expose corner shape settings');
+assert.match(publicGallery,/labels/,'overlay customizer must expose label visibility settings');
+assert.match(publicOverlayScript,/dataset\.overlayTheme/,'overlay runtime must apply the selected palette');
+assert.match(publicOverlayScript,/dataset\.overlayRadius/,'overlay runtime must apply the selected corner shape');
+assert.match(publicOverlayScript,/--overlay-motion/,'overlay runtime must apply the selected animation speed');
 assert.match(publicApp,/previewOverlay=overlay/,'gallery tests must target only the selected overlay');
 assert.match(publicApp,/join:new Set\(\['viewer-count'\]\)/,'viewer count must use the real join event');
 assert.match(publicApp,/type==='join'\?\{type:'join'/,'viewer count test must emit a join event');
