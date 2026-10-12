@@ -1,10 +1,10 @@
 (() => {
   const root = document.getElementById('overlayList');
   if (!root) return;
-  const defaults = { theme: 'pink', scale: '1', density: 'normal', sound: '1', soundVolume: '0.7', motion: '1', glow: '1', radius: 'soft', labels: '1', text: '1', opacity: '1', align: 'center', border: 'glow', style: 'auto', title: '', subtitle: '', footer: '', event: '' };
+  const defaults = { theme: 'pink', scale: '1', density: 'normal', sound: '1', soundVolume: '0.7', motion: '1', glow: '1', radius: 'soft', labels: '1', text: '1', opacity: '1', align: 'center', border: 'glow', style: 'cinematic', title: '', subtitle: '', footer: '', event: '' };
   const themes = { pink: 'Pink / Violet', cyan: 'Cyan / Blue', gold: 'Gold / Ember', green: 'Emerald / Mint', mono: 'White / Graphite' };
   const motions = { '0.7': 'Calm', '1': 'Normal', '1.35': 'Energic', '1.7': 'Fast' };
-  const styles = { auto: 'Adaptiv', neon: 'Neon', minimal: 'Minimal', arcade: 'Arcade' };
+  const styles = { cinematic: 'Cinematic / realist', auto: 'Adaptiv', neon: 'Neon', minimal: 'Minimal', arcade: 'Arcade' };
   const read = slug => { try { return { ...defaults, ...JSON.parse(localStorage.getItem(`tiklivetools_overlay_${slug}`) || '{}') }; } catch { return { ...defaults }; } };
   const write = (slug, value) => localStorage.setItem(`tiklivetools_overlay_${slug}`, JSON.stringify(value));
   function apply(card, settings) {

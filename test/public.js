@@ -12,6 +12,7 @@ const publicApp=fs.readFileSync(path.join(out,'app.js'),'utf8');
 const publicUi=fs.readFileSync(path.join(out,'ui-enhancements.js'),'utf8');
 const publicGallery=fs.readFileSync(path.join(out,'overlay-gallery.js'),'utf8');
 const publicOverlayScript=fs.readFileSync(path.join(out,'overlays','advanced.js'),'utf8');
+const publicOverlayCss=fs.readFileSync(path.join(out,'overlays','advanced.css'),'utf8');
 const publicTts=fs.readFileSync(path.join(out,'tts-edge.js'),'utf8');
 assert.match(publicApp,/tiklivetools_public_backend/,'public app must reuse the Actions backend setting for overlay links');
 assert.match(publicTts,/ttsApi\('\/api\/tts\/voices'\)/,'public TTS catalog must use the configured backend');
@@ -45,6 +46,8 @@ assert.match(publicOverlayScript,/--overlay-volume/,'overlay runtime must apply 
 assert.match(publicOverlayScript,/dataset\.overlayStyle/,'overlay runtime must apply the selected visual style');
 assert.match(publicOverlayScript,/customText/,'overlay runtime must apply custom text');
 assert.match(publicOverlayScript,/custom-overlay-subtitle/,'overlay runtime must render custom subtitle text');
+assert.match(publicOverlayCss,/cinematicRocket/,'overlay stylesheet must include cinematic firework motion');
+assert.match(publicOverlayCss,/cinematicCannonShot/,'overlay stylesheet must include cinematic cannon motion');
 assert.match(publicApp,/previewOverlay=overlay/,'gallery tests must target only the selected overlay');
 assert.match(publicApp,/join:new Set\(\['viewer-count'\]\)/,'viewer count must use the real join event');
 assert.match(publicApp,/type==='join'\?\{type:'join'/,'viewer count test must emit a join event');
