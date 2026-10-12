@@ -73,6 +73,7 @@ const eventCues={
 };
 function cueForEvent(eventType){return eventCues[name]?.[eventType]||''}
 window.addEventListener('pointerdown',unlockAudio,{once:false,passive:true});
+window.addEventListener('message',event=>{if(event.data?.type==='unlock-audio')unlockAudio()});
 let lastRenderKey='';
 let eventEffectTimer=0;
 let volatileUntil=0;
