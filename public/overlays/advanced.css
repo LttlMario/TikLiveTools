@@ -2,6 +2,7 @@
 *{box-sizing:border-box}
 html,body{margin:0;background:transparent!important;color:#fff;font-family:Inter,Segoe UI,Arial,sans-serif;overflow:hidden}
 html.preview-mode,html.preview-mode body{background:#11121a!important;min-height:100vh}
+html.preview-mode #app{width:100vw;min-height:100vh;display:grid;place-items:center}
 #app{padding:18px;min-width:360px;background:transparent;transform:scale(var(--overlay-scale,1));transform-origin:top left}
 html[data-overlay-density="compact"] #app{padding:6px}
 html[data-overlay-density="airy"] #app{padding:30px}
