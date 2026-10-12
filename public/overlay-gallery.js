@@ -7,7 +7,7 @@
   const styles = { cinematic: 'Cinematic / realist', auto: 'Adaptiv', neon: 'Neon', minimal: 'Minimal', arcade: 'Arcade' };
   const fonts = { inter: 'Inter', roboto: 'Roboto', system: 'Segoe UI', mono: 'Monospace' };
   const textEffects = { none: 'Niciun efect', lift: 'Ridicare subtilă', glow: 'Glow', pop: 'Pop' };
-  const read = slug => { try { return { ...defaults, ...JSON.parse(localStorage.getItem(`tiklivetools_overlay_${slug}`) || '{}') }; } catch { return { ...defaults }; } };
+  const read = slug => { try { const saved = JSON.parse(localStorage.getItem(`tiklivetools_overlay_${slug}`) || '{}'); return { ...defaults, ...saved, style: saved.style === 'auto' ? 'cinematic' : (saved.style || defaults.style) }; } catch { return { ...defaults }; } };
   const write = (slug, value) => localStorage.setItem(`tiklivetools_overlay_${slug}`, JSON.stringify(value));
   function apply(card, settings) {
     const iframe = card.querySelector('iframe'), code = card.querySelector('code'), open = card.querySelector('.open-preview');

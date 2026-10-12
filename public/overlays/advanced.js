@@ -23,6 +23,8 @@ document.documentElement.style.setProperty('--overlay-volume',String(Math.max(0,
 document.documentElement.dataset.overlayFont=params.get('font')||'inter';
 document.documentElement.dataset.overlayTextEffect=params.get('textEffect')||'none';
 document.documentElement.dataset.overlayUsernameEffect=params.get('usernameEffect')||'none';
+document.documentElement.dataset.overlayShadow=params.get('shadow')==='0'?'off':'on';
+document.documentElement.dataset.overlayTextBorder=params.get('textBorder')==='1'?'on':'off';
 document.documentElement.dataset.overlayProfile=params.get('profilePicture')==='0'?'hidden':'visible';
 document.documentElement.dataset.overlayGiftPicture=params.get('giftPicture')==='0'?'hidden':'visible';
 document.documentElement.dataset.overlaySingleLine=params.get('singleLine')==='1'?'single':'multi';

@@ -44,6 +44,9 @@ assert.match(publicGallery,/usernameColor/,'overlay customizer must expose usern
 assert.match(publicGallery,/profilePicture/,'overlay customizer must expose profile picture controls');
 assert.match(publicOverlayScript,/overlayUsernameEffect/,'overlay runtime must apply username text effects');
 assert.match(publicOverlayScript,/overlayProfile/,'overlay runtime must apply profile picture settings');
+assert.match(publicOverlayScript,/overlayTextBorder/,'overlay runtime must apply text border settings');
+assert.match(publicOverlayCss,/var\(--overlay-text[,)]/,'overlay stylesheet must visibly apply text scale');
+assert.match(publicOverlayCss,/overlay-username-color/,'overlay stylesheet must visibly apply username color');
 assert.match(publicOverlayScript,/dataset\.overlayTheme/,'overlay runtime must apply the selected palette');
 assert.match(publicOverlayScript,/dataset\.overlayRadius/,'overlay runtime must apply the selected corner shape');
 assert.match(publicOverlayScript,/--overlay-motion/,'overlay runtime must apply the selected animation speed');
