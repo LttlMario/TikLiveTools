@@ -48,6 +48,10 @@ assert.match(publicOverlayScript,/customText/,'overlay runtime must apply custom
 assert.match(publicOverlayScript,/custom-overlay-subtitle/,'overlay runtime must render custom subtitle text');
 assert.match(publicOverlayCss,/cinematicRocket/,'overlay stylesheet must include cinematic firework motion');
 assert.match(publicOverlayCss,/cinematicCannonShot/,'overlay stylesheet must include cinematic cannon motion');
+assert.match(publicOverlayScript,/normalizeOverlayEvent/,'overlays must accept the documented event schema');
+assert.match(publicOverlayScript,/profilePictureUrl/,'overlays must accept profile picture payloads');
+assert.match(publicOverlayScript,/requestAnimationFrame/,'physics effects must use a frame-based animation loop');
+assert.match(publicOverlayScript,/spawnPhysics/,'gift events must spawn physics effects');
 assert.match(publicApp,/previewOverlay=overlay/,'gallery tests must target only the selected overlay');
 assert.match(publicApp,/join:new Set\(\['viewer-count'\]\)/,'viewer count must use the real join event');
 assert.match(publicApp,/type==='join'\?\{type:'join'/,'viewer count test must emit a join event');
