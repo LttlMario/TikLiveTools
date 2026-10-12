@@ -20,6 +20,17 @@ document.documentElement.style.setProperty('--overlay-glow',String(Math.max(.25,
 document.documentElement.style.setProperty('--overlay-text',String(Math.max(.8,Math.min(1.3,Number(params.get('text')||1)))));
 document.documentElement.style.setProperty('--overlay-opacity',String(Math.max(.65,Math.min(1,Number(params.get('opacity')||1)))));
 document.documentElement.style.setProperty('--overlay-volume',String(Math.max(0,Math.min(1,Number(params.get('soundVolume')||.7)))));
+document.documentElement.dataset.overlayFont=params.get('font')||'inter';
+document.documentElement.dataset.overlayTextEffect=params.get('textEffect')||'none';
+document.documentElement.dataset.overlayUsernameEffect=params.get('usernameEffect')||'none';
+document.documentElement.dataset.overlayProfile=params.get('profilePicture')==='0'?'hidden':'visible';
+document.documentElement.dataset.overlayGiftPicture=params.get('giftPicture')==='0'?'hidden':'visible';
+document.documentElement.dataset.overlaySingleLine=params.get('singleLine')==='1'?'single':'multi';
+document.documentElement.style.setProperty('--overlay-line',String(Math.max(.8,Math.min(1.5,Number(params.get('lineSpacing')||1)))));
+document.documentElement.style.setProperty('--overlay-letter',String(Math.max(.7,Math.min(1.6,Number(params.get('letterSpacing')||1)))));
+document.documentElement.style.setProperty('--overlay-picture',String(Math.max(.5,Math.min(1.6,Number(params.get('pictureSize')||1)))));
+document.documentElement.style.setProperty('--overlay-username',String(Math.max(.7,Math.min(1.5,Number(params.get('usernameSize')||1)))));
+document.documentElement.style.setProperty('--overlay-username-color',params.get('usernameColor')||'#32c3a6');
 const backend=(()=>{try{const u=new URL(configuredBackend||location.origin);return /^https?:$/.test(u.protocol)?u.origin:''}catch{return ''}})();
 const api=path=>`${backend}${path}`;
 const socketUrl=(()=>{try{const u=new URL(backend||location.origin);u.protocol=u.protocol==='https:'?'wss:':'ws:';u.pathname='/ws';u.search='';return u.toString()}catch{return ''}})();

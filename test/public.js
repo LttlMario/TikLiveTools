@@ -39,6 +39,11 @@ assert.match(publicGallery,/title/,'overlay customizer must expose title text se
 assert.match(publicGallery,/subtitle/,'overlay customizer must expose subtitle text settings');
 assert.match(publicGallery,/footer/,'overlay customizer must expose footer text settings');
 assert.match(publicGallery,/event/,'overlay customizer must expose event message settings');
+assert.match(publicGallery,/Font și text/,'overlay customizer must expose typography controls');
+assert.match(publicGallery,/usernameColor/,'overlay customizer must expose username color controls');
+assert.match(publicGallery,/profilePicture/,'overlay customizer must expose profile picture controls');
+assert.match(publicOverlayScript,/overlayUsernameEffect/,'overlay runtime must apply username text effects');
+assert.match(publicOverlayScript,/overlayProfile/,'overlay runtime must apply profile picture settings');
 assert.match(publicOverlayScript,/dataset\.overlayTheme/,'overlay runtime must apply the selected palette');
 assert.match(publicOverlayScript,/dataset\.overlayRadius/,'overlay runtime must apply the selected corner shape');
 assert.match(publicOverlayScript,/--overlay-motion/,'overlay runtime must apply the selected animation speed');
