@@ -69,6 +69,7 @@ html[data-overlay-theme="mono"] .card:before,html[data-overlay-theme="mono"] .ca
 html[data-overlay-radius="round"] .card,html[data-overlay-radius="round"] .feed-item,html[data-overlay-radius="round"] .alert-pop{border-radius:34px!important}
 html[data-overlay-radius="square"] .card,html[data-overlay-radius="square"] .feed-item,html[data-overlay-radius="square"] .alert-pop{border-radius:8px!important}
 html[data-overlay-labels="hidden"] .firework-label,html[data-overlay-labels="hidden"] .snow-label,html[data-overlay-labels="hidden"] .emoji-label,html[data-overlay-labels="hidden"] .cannon-info,html[data-overlay-labels="hidden"] .social-rotator small{display:none!important}
+html .custom-overlay-subtitle,html .custom-overlay-footer{position:relative;z-index:8;text-align:center;color:var(--cyan);font-size:12px;font-weight:700;letter-spacing:.04em;text-shadow:0 2px 10px rgba(0,0,0,.7);margin-top:6px}html .custom-overlay-footer{color:var(--gold);font-size:10px;opacity:.9}
 html #app{filter:drop-shadow(0 0 calc(18px * var(--overlay-glow,1)) color-mix(in srgb,var(--pink) 28%,transparent))}
 html #app{font-size:calc(var(--overlay-text,1) * 1em);opacity:var(--overlay-opacity,1)}
 html[data-overlay-align="left"] #app{text-align:left}html[data-overlay-align="right"] #app{text-align:right}

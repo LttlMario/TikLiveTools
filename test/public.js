@@ -34,11 +34,17 @@ assert.match(publicGallery,/opacity/,'overlay customizer must expose opacity set
 assert.match(publicGallery,/align/,'overlay customizer must expose alignment settings');
 assert.match(publicGallery,/border/,'overlay customizer must expose border settings');
 assert.match(publicGallery,/style/,'overlay customizer must expose visual style settings');
+assert.match(publicGallery,/title/,'overlay customizer must expose title text settings');
+assert.match(publicGallery,/subtitle/,'overlay customizer must expose subtitle text settings');
+assert.match(publicGallery,/footer/,'overlay customizer must expose footer text settings');
+assert.match(publicGallery,/event/,'overlay customizer must expose event message settings');
 assert.match(publicOverlayScript,/dataset\.overlayTheme/,'overlay runtime must apply the selected palette');
 assert.match(publicOverlayScript,/dataset\.overlayRadius/,'overlay runtime must apply the selected corner shape');
 assert.match(publicOverlayScript,/--overlay-motion/,'overlay runtime must apply the selected animation speed');
 assert.match(publicOverlayScript,/--overlay-volume/,'overlay runtime must apply the selected sound volume');
 assert.match(publicOverlayScript,/dataset\.overlayStyle/,'overlay runtime must apply the selected visual style');
+assert.match(publicOverlayScript,/customText/,'overlay runtime must apply custom text');
+assert.match(publicOverlayScript,/custom-overlay-subtitle/,'overlay runtime must render custom subtitle text');
 assert.match(publicApp,/previewOverlay=overlay/,'gallery tests must target only the selected overlay');
 assert.match(publicApp,/join:new Set\(\['viewer-count'\]\)/,'viewer count must use the real join event');
 assert.match(publicApp,/type==='join'\?\{type:'join'/,'viewer count test must emit a join event');
