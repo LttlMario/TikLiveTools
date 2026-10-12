@@ -7,8 +7,10 @@ assert.ok(fs.existsSync(path.join(out,'index.html')),'public build must contain 
 assert.ok(fs.existsSync(path.join(out,'app.js')),'public build must contain the application script');
 assert.ok(fs.existsSync(path.join(out,'app.css')),'public build must contain the application stylesheet');
 assert.ok(fs.existsSync(path.join(out,'tts-edge.js')),'public build must contain the Neural TTS enhancement');
+assert.ok(fs.existsSync(path.join(out,'overlay-gallery.js')),'public build must contain per-overlay customization');
 const publicApp=fs.readFileSync(path.join(out,'app.js'),'utf8');
 const publicUi=fs.readFileSync(path.join(out,'ui-enhancements.js'),'utf8');
+const publicGallery=fs.readFileSync(path.join(out,'overlay-gallery.js'),'utf8');
 const publicOverlayScript=fs.readFileSync(path.join(out,'overlays','advanced.js'),'utf8');
 const publicTts=fs.readFileSync(path.join(out,'tts-edge.js'),'utf8');
 assert.match(publicApp,/tiklivetools_public_backend/,'public app must reuse the Actions backend setting for overlay links');
@@ -16,6 +18,13 @@ assert.match(publicTts,/ttsApi\('\/api\/tts\/voices'\)/,'public TTS catalog must
 assert.match(publicTts,/ttsApi\('\/api\/tts\/synthesize'\)/,'public TTS synthesis must use the configured backend');
 assert.match(publicApp,/Testează \$\{label\}/,'gallery buttons must be named for the selected overlay');
 assert.match(publicApp,/localUrl=`\$\{base\}\/overlay\/\$\{name\}\?preview=1`/,'local gallery previews must run in silent preview mode');
+assert.match(publicApp,/overlay-gallery\.js/,'application shell must load the overlay customizer');
+assert.match(publicGallery,/Customize/,'gallery cards must expose a Customize control');
+assert.match(publicGallery,/localStorage/,'overlay settings must persist locally');
+assert.match(publicGallery,/theme/,'overlay customizer must expose theme settings');
+assert.match(publicGallery,/scale/,'overlay customizer must expose scale settings');
+assert.match(publicGallery,/density/,'overlay customizer must expose density settings');
+assert.match(publicGallery,/sound/,'overlay customizer must expose sound settings');
 assert.match(publicApp,/previewOverlay=overlay/,'gallery tests must target only the selected overlay');
 assert.match(publicApp,/join:new Set\(\['viewer-count'\]\)/,'viewer count must use the real join event');
 assert.match(publicApp,/type==='join'\?\{type:'join'/,'viewer count test must emit a join event');
