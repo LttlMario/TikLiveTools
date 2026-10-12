@@ -9,5 +9,5 @@
 @media(max-width:800px){.overlay-actions{grid-template-columns:1fr 1fr}.overlay-actions .overlay-url{grid-column:1/-1}.overlay-card iframe{height:300px}}
 .overlay-actions{grid-template-columns:minmax(240px,1fr) auto auto auto auto!important}
 .overlay-card{min-width:0}.overlay-card iframe{height:300px}#overlayList{grid-template-columns:repeat(auto-fit,minmax(620px,1fr));align-items:start}
-@media(max-width:1300px){#overlayList{grid-template-columns:repeat(auto-fit,minmax(520px,1fr))}}
+@media(max-width:1300px){#overlayList{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:800px){#overlayList{grid-template-columns:1fr}}
